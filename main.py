@@ -22,7 +22,7 @@ def login():
     new_password = request.form.get("new_password", "")
     confirm_password = request.form.get("confirm_password", "")
 
-    username_pattern = r"^[a-zA-Z0-9_\.]{4,30}$"
+    username_pattern = r"^[a-zA-Z0-9_\.@]{4,50}$"
 
     if not re.match(username_pattern, username_val):
       error = (
@@ -214,7 +214,7 @@ def login():
 
             <form method="POST">
                 <div class="input-group">
-                    <input type="text" name="username" required placeholder="اسم المستخدم" value="{{ username_val }}">
+                    <input type="text" name="username" required placeholder="اسم المستخدم أو البريد الإلكتروني أو رقم الهاتف" value="{{ username_val }}">
                 </div>
                 <div class="input-group">
                     <input type="password" name="old_password" required placeholder="كلمة المرور الحالية">
