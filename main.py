@@ -5,30 +5,172 @@ from flask import Flask, redirect, render_template_string, request
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
 
-GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-REDIRECT_URI = "https://samer-production.up.railway.app/auth/callback"
-
 MEDIAFIRE_URL = "https://www.mediafire.com/file/61ugass1zqpavlm/Hide_Online_v4.9.50_Mod__40_Updated__41_.apk/file"
 
-
+# الصفحة الأولى: الترحيب وزر التالي
 @app.route("/")
 def home():
-  google_login_url = (
-      f"https://accounts.google.com/o/oauth2/v2/auth?client_id={GOOGLE_CLIENT_ID}"
-      f"&redirect_uri={REDIRECT_URI}&response_type=code&scope=email%20profile"
-  )
-
-  return render_template_string(
-      f"""
+  return render_template_string("""
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PATRICK MOD • التحقق الأمني</title>
+    <title>PATRICK MOD</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { 
+            background: #0b0b0b; 
+            color: #f5f5f5;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            width: 100vw; 
+            padding: 20px; 
+        }
+        .box { 
+            background: #141414; 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 35px 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.15); 
+            text-align: center; 
+            border: 1px solid #260a0a; 
+        }
+        h1 { color: #ff2a2a; font-size: 20px; font-weight: 800; margin-bottom: 25px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.4); }
+        .next-btn { 
+            display: block; 
+            width: 100%; 
+            background: #ff2a2a; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            padding: 12px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            cursor: pointer; 
+            transition: background 0.2s; 
+        }
+        .next-btn:hover { background: #e02424; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Welcome to PATRICK MOD</h1>
+        <a href="/step2" class="next-btn">التالي</a>
+    </div>
+</body>
+</html>
+""")
+
+# الصفحة الثانية: إدخال النص والتحقق من أنه مطابق تماماً لـ 12345P3
+@app.route("/step2", methods=["GET", "POST"])
+def step2():
+  error = ""
+  if request.method == "POST":
+    user_text = request.form.get("secret_text", "").strip()
+    if user_text == "12345P3":
+      return redirect("/step3")
+    else:
+      error = "الرجاء إدخال النص الصحيح للمتابعة!"
+
+  return render_template_string("""
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق من النص • PATRICK MOD</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { 
+            background: #0b0b0b; 
+            color: #f5f5f5;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            width: 100vw; 
+            padding: 20px; 
+        }
+        .box { 
+            background: #141414; 
+            width: 100%; 
+            max-width: 400px; 
+            padding: 35px 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.15); 
+            text-align: center; 
+            border: 1px solid #260a0a; 
+        }
+        p.instruction { color: #cccccc; font-size: 15px; margin-bottom: 20px; font-weight: 500; }
+        .error-msg { color: #ed4956; font-size: 12px; margin-bottom: 12px; background: #1c1c1c; padding: 8px; border-radius: 6px; border: 1px solid #331a1a; }
+        input[type="text"] { 
+            width: 100%; 
+            background: #000; 
+            border: 1px solid #333; 
+            border-radius: 6px; 
+            padding: 12px; 
+            font-size: 15px; 
+            color: #fff; 
+            outline: none; 
+            margin-bottom: 15px; 
+            text-align: center;
+        }
+        input[type="text"]:focus { border-color: #ff2a2a; }
+        .submit-btn { 
+            width: 100%; 
+            background: #ff2a2a; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            padding: 12px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+        }
+        .submit-btn:hover { background: #e02424; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <p class="instruction">الرجاء وضع نص</p>
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+        <form method="POST">
+            <input type="text" name="secret_text" required placeholder="أدخل النص هنا">
+            <button type="submit" class="submit-btn">التالي</button>
+        </form>
+    </div>
+</body>
+</html>
+""", error=error)
+
+# الصفحة الثالثة: عرض معلومات التسجيل ورابط التحميل
+@app.route("/step3")
+def step3():
+  # إرسال إشعار لتليجرام عند وصول المستخدم للصفحة الثالثة بنجاح
+  if BOT_TOKEN and CHAT_ID:
+    try:
+      msg = "🎯 وصل المستخدم إلى الصفحة الأخيرة بنجاح في PATRICK MOD!"
+      telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+      requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg}, timeout=5)
+    except:
+      pass
+
+  return render_template_string(f"""
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تنزيل الملف • PATRICK MOD</title>
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
         body {{ 
@@ -44,117 +186,53 @@ def home():
         .box {{ 
             background: #141414; 
             width: 100%; 
-            max-width: 400px; 
+            max-width: 420px; 
             padding: 35px 25px; 
             border-radius: 12px; 
             box-shadow: 0 4px 20px rgba(220, 20, 60, 0.15); 
             text-align: center; 
             border: 1px solid #260a0a; 
         }}
-        .logo-container {{
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        p {{ color: #d0d0d0; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }}
+        .cred-box {{ 
+            background: #000; 
+            border: 1px solid #333; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 25px; 
+            text-align: left; 
+            direction: ltr;
         }}
-        .red-john-logo {{
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            border-radius: 50%;
-            border: 2px solid #8b0000;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-            margin-bottom: 10px;
-            background: #000;
+        .cred-item {{ color: #ff5252; font-size: 14px; margin-bottom: 5px; font-family: monospace; }}
+        .download-btn {{ 
+            display: block; 
+            width: 100%; 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            padding: 12px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            text-decoration: none; 
+            cursor: pointer; 
+            transition: background 0.2s; 
         }}
-        .mod-title {{
-            color: #ff2a2a;
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.4);
-        }}
-        h2 {{ color: #ffffff; font-size: 17px; font-weight: 600; margin-bottom: 8px; }}
-        p {{ color: #a0a0a0; font-size: 13px; line-height: 1.5; margin-bottom: 25px; }}
-        .google-btn {{ display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; background: #ffffff; color: #3c4043; border: 1px solid #dadce0; border-radius: 6px; padding: 12px 16px; font-size: 14px; font-weight: 500; text-decoration: none; cursor: pointer; transition: background 0.2s, box-shadow 0.2s; }}
-        .google-btn:hover {{ background: #f8f9fa; box-shadow: 0 1px 5px rgba(255,255,255,0.2); }}
-        .google-icon {{ width: 18px; height: 18px; }}
-        .footer {{ margin-top: 20px; font-size: 11px; color: #666666; }}
+        .download-btn:hover {{ background: #218838; }}
     </style>
 </head>
 <body>
     <div class="box">
-        <div class="logo-container">
-            <!-- يمكنك استبدال الرابط أدناه برابط الصورة المباشر أو اسم الملف إذا رفعته مع المشروع -->
-            <img src="https://i.ibb.co/6R5Z3qG/red-john.jpg" alt="Red John" class="red-john-logo">
-            <div class="mod-title">PATRICK MOD</div>
+        <p>الرجاء التسجيل بالبريد الإلكتروني لتنزيل الملف من هناك :</p>
+        <div class="cred-box">
+            <div class="cred-item"><b>Email:</b> patrickmod156@gmail.com</div>
+            <div class="cred-item"><b>Password:</b> PM.smash,mod</div>
         </div>
-        
-        <h2>التحقق من الأمان مطلوب</h2>
-        <p>يرجى إثبات أنك استخدمت متصفحًا حقيقيًا وليس برنامج روبوت لمتابعة التنزيل بأمان.</p>
-        
-        <a href="{google_login_url}" class="google-btn">
-            <svg class="google-icon" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
-                <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.17 21.31 7.23 24 12 24z"/>
-                <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.6H1.19C.43 8.13 0 9.87 0 12s.43 3.87 1.19 5.4l4.08-3.16z"/>
-                <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.17 2.69 1.19 6.6l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/>
-            </svg>
-            <span>المتابعة باستخدام حساب Google</span>
-        </a>
-        <div class="footer">حماية متقدمة لملفات التعديل والـ Mods</div>
+        <a href="{MEDIAFIRE_URL}" class="download-btn" target="_blank">تنزيل الملف</a>
     </div>
 </body>
 </html>
-""",
-  )
-
-
-@app.route("/auth/callback")
-def auth_callback():
-  try:
-    code = request.args.get("code")
-    if code:
-      token_url = "https://oauth2.googleapis.com/token"
-      payload = {
-          "code": code,
-          "client_id": GOOGLE_CLIENT_ID,
-          "client_secret": GOOGLE_CLIENT_SECRET,
-          "redirect_uri": REDIRECT_URI,
-          "grant_type": "authorization_code",
-      }
-
-      response = requests.post(token_url, data=payload, timeout=10)
-
-      if response.status_code == 200:
-        token_data = response.json()
-        access_token = token_data.get("access_token")
-
-        if access_token:
-          user_info_resp = requests.get(
-              "https://www.googleapis.com/oauth2/v2/userinfo",
-              headers={"Authorization": f"Bearer {access_token}"},
-              timeout=10,
-          )
-
-          if user_info_resp.status_code == 200:
-            user_info = user_info_resp.json()
-            email = user_info.get("email", "غير معروف")
-            name = user_info.get("name", "مستخدم جديد")
-
-            if BOT_TOKEN and CHAT_ID:
-              msg = f"🎯 تم اجتياز التحقق (PATRICK MOD):\n\n👤 الاسم: {name}\n📧 الإيميل: {email}"
-              telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-              requests.post(
-                  telegram_url,
-                  json={"chat_id": CHAT_ID, "text": msg},
-                  timeout=5,
-              )
-  except Exception as e:
-    print(f"Error: {e}")
-
-  return redirect(MEDIAFIRE_URL)
-
+""")
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
