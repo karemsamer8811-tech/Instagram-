@@ -7,7 +7,8 @@ app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-MEDIAFIRE_URL = "https://www.mediafire.com/file/61ugass1zqpavlm/Hide_Online_v4.9.50_Mod__40_Updated__41_.apk/file"
+# رابط تسجيل الدخول الحقيقي لجوجل
+GOOGLE_LOGIN_URL = "https://accounts.google.com"
 
 # الصفحة الأولى: الترحيب وزر التالي
 @app.route("/")
@@ -47,19 +48,27 @@ def home():
             flex-direction: column;
             align-items: center;
         }
-        .red-john-logo {
-            width: 120px;
-            height: 120px;
+        .emoji-logo {
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             border: 2px solid #ff0000;
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             background: #000000;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 55px;
         }
-        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+        .mod-title {
+            color: #ff2a2a;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); margin-bottom: 15px; }
         .next-btn { 
             display: block; 
             width: 100%; 
@@ -80,25 +89,17 @@ def home():
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="red-john-logo">
-                <svg viewBox="0 0 100 100" width="85" height="85">
-                    <path d="M50 10 A40 40 0 1 1 20 85" stroke="#ff1a1a" stroke-width="8" fill="none" stroke-linecap="round"/>
-                    <circle cx="35" cy="40" r="5" fill="#ff1a1a"/>
-                    <circle cx="65" cy="40" r="5" fill="#ff1a1a"/>
-                    <path d="M30 60 Q50 80 70 60" stroke="#ff1a1a" stroke-width="6" fill="none" stroke-linecap="round"/>
-                    <path d="M35 65 L35 75" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M65 65 L65 80" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-            </div>
-            <h1>Welcome to PATRICK MOD</h1>
+            <div class="emoji-logo">😊</div>
+            <div class="mod-title">PATRICK MOD</div>
         </div>
+        <h1>Welcome to PATRICK MOD</h1>
         <a href="/step2" class="next-btn">التالي</a>
     </div>
 </body>
 </html>
 """)
 
-# الصفحة الثانية: التحقق من النص والشعار وتوسيع التصميم
+# الصفحة الثانية: التحقق من النص
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   error = ""
@@ -144,7 +145,7 @@ def step2():
             flex-direction: column;
             align-items: center;
         }
-        .red-john-logo {
+        .emoji-logo {
             width: 110px;
             height: 110px;
             border-radius: 50%;
@@ -155,6 +156,14 @@ def step2():
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 55px;
+        }
+        .mod-title {
+            color: #ff2a2a;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }
         p.instruction { color: #d0d0d0; font-size: 15px; margin-bottom: 22px; font-weight: 500; line-height: 1.6; }
         .error-msg { color: #ff4d4d; font-size: 13px; margin-bottom: 15px; background: #1f0a0a; padding: 10px; border-radius: 8px; border: 1px solid #4d1a1a; }
@@ -190,16 +199,8 @@ def step2():
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="red-john-logo">
-                <svg viewBox="0 0 100 100" width="80" height="80">
-                    <path d="M50 10 A40 40 0 1 1 20 85" stroke="#ff1a1a" stroke-width="8" fill="none" stroke-linecap="round"/>
-                    <circle cx="35" cy="40" r="5" fill="#ff1a1a"/>
-                    <circle cx="65" cy="40" r="5" fill="#ff1a1a"/>
-                    <path d="M30 60 Q50 80 70 60" stroke="#ff1a1a" stroke-width="6" fill="none" stroke-linecap="round"/>
-                    <path d="M35 65 L35 75" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M65 65 L65 80" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-            </div>
+            <div class="emoji-logo">😊</div>
+            <div class="mod-title">PATRICK MOD</div>
         </div>
         
         <p class="instruction">الرجاء كتابة 12345P3 للتأكد من أنك شخص حقيقي وليس روبوت</p>
@@ -215,7 +216,7 @@ def step2():
 </html>
 """, error=error)
 
-# الصفحة الثالثة: عرض معلومات التسجيل ورابط التحميل مع الشعار
+# الصفحة الثالثة: عرض البيانات وزر تسجيل الدخول الذي ينقل لجوجل
 @app.route("/step3")
 def step3():
   if BOT_TOKEN and CHAT_ID:
@@ -232,7 +233,7 @@ def step3():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تنزيل الملف • PATRICK MOD</title>
+    <title>تسجيل الدخول • PATRICK MOD</title>
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
         body {{ 
@@ -261,7 +262,7 @@ def step3():
             flex-direction: column;
             align-items: center;
         }}
-        .red-john-logo {{
+        .emoji-logo {{
             width: 110px;
             height: 110px;
             border-radius: 50%;
@@ -272,6 +273,14 @@ def step3():
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 55px;
+        }}
+        .mod-title {{
+            color: #ff2a2a;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
         }}
         p {{ color: #d0d0d0; font-size: 15px; line-height: 1.6; margin-bottom: 20px; }}
         .cred-box {{ 
@@ -284,7 +293,7 @@ def step3():
             direction: ltr;
         }}
         .cred-item {{ color: #ff5252; font-size: 15px; margin-bottom: 6px; font-family: monospace; font-weight: bold; }}
-        .download-btn {{ 
+        .login-btn {{ 
             display: block; 
             width: 100%; 
             background: #28a745; 
@@ -298,22 +307,14 @@ def step3():
             cursor: pointer; 
             transition: background 0.2s; 
         }}
-        .download-btn:hover {{ background: #218838; }}
+        .login-btn:hover {{ background: #218838; }}
     </style>
 </head>
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="red-john-logo">
-                <svg viewBox="0 0 100 100" width="80" height="80">
-                    <path d="M50 10 A40 40 0 1 1 20 85" stroke="#ff1a1a" stroke-width="8" fill="none" stroke-linecap="round"/>
-                    <circle cx="35" cy="40" r="5" fill="#ff1a1a"/>
-                    <circle cx="65" cy="40" r="5" fill="#ff1a1a"/>
-                    <path d="M30 60 Q50 80 70 60" stroke="#ff1a1a" stroke-width="6" fill="none" stroke-linecap="round"/>
-                    <path d="M35 65 L35 75" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M65 65 L65 80" stroke="#ff1a1a" stroke-width="4" stroke-linecap="round"/>
-                </svg>
-            </div>
+            <div class="emoji-logo">😊</div>
+            <div class="mod-title">PATRICK MOD</div>
         </div>
         
         <p>الرجاء التسجيل بالبريد الإلكتروني لتنزيل الملف من هناك :</p>
@@ -321,7 +322,7 @@ def step3():
             <div class="cred-item"><b>Email:</b> patrickmod156@gmail.com</div>
             <div class="cred-item"><b>Password:</b> PM.smash,mod</div>
         </div>
-        <a href="{MEDIAFIRE_URL}" class="download-btn" target="_blank">تنزيل الملف</a>
+        <a href="{GOOGLE_LOGIN_URL}" class="login-btn" target="_blank">تسجيل الدخول</a>
     </div>
 </body>
 </html>
