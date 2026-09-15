@@ -22,8 +22,8 @@ def home():
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { 
-            background: #f4f4f5; 
-            color: #1a1a1a;
+            background: #130718; 
+            color: #ffffff;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -31,30 +31,23 @@ def home():
             width: 100vw; 
             padding: 20px; 
         }
-        .box { 
-            background: #ffffff; 
+        .container { 
             width: 100%; 
-            max-width: 480px; 
-            min-height: 620px; 
-            padding: 80px 30px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); 
+            max-width: 450px; 
             text-align: center; 
-            border: 1px solid #e0e0e0; 
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
         }
         .logo-container {
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .glowing-circle {
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             border: 3px solid #ff0000;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
@@ -63,12 +56,12 @@ def home():
         }
         .mod-title {
             color: #ff2a2a;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }
-        h1 { color: #ff2a2a; font-size: 22px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.2); margin-bottom: 35px; }
+        h1 { color: #ff2a2a; font-size: 24px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.2); margin-bottom: 40px; }
         .next-btn { 
             display: block; 
             width: 100%; 
@@ -77,7 +70,7 @@ def home():
             border: none; 
             border-radius: 12px; 
             padding: 16px; 
-            font-size: 16px; 
+            font-size: 17px; 
             font-weight: 600; 
             text-decoration: none; 
             cursor: pointer; 
@@ -87,7 +80,7 @@ def home():
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="container">
         <div class="logo-container">
             <div class="glowing-circle"></div>
             <div class="mod-title">PATRICK MOD</div>
@@ -120,8 +113,8 @@ def step2():
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { 
-            background: #f4f4f5; 
-            color: #1a1a1a;
+            background: #130718; 
+            color: #ffffff;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -129,30 +122,23 @@ def step2():
             width: 100vw; 
             padding: 20px; 
         }
-        .box { 
-            background: #ffffff; 
+        .container { 
             width: 100%; 
-            max-width: 480px; 
-            min-height: 620px; 
-            padding: 80px 30px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); 
+            max-width: 450px; 
             text-align: center; 
-            border: 1px solid #e0e0e0; 
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
         }
         .logo-container {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .glowing-circle {
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             border: 3px solid #ff0000;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
@@ -161,28 +147,28 @@ def step2():
         }
         .mod-title {
             color: #ff2a2a;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }
-        p.instruction { color: #444; font-size: 15px; margin-bottom: 25px; font-weight: 500; line-height: 1.6; }
-        .error-msg { color: #ff4d4d; font-size: 13px; margin-bottom: 15px; background: #fff5f5; padding: 12px; border-radius: 10px; border: 1px solid #ffcccc; width: 100%; }
+        p.instruction { color: #dddddd; font-size: 16px; margin-bottom: 25px; font-weight: 500; line-height: 1.6; }
+        .error-msg { color: #ff4d4d; font-size: 14px; margin-bottom: 15px; background: rgba(255, 77, 77, 0.1); padding: 12px; border-radius: 10px; border: 1px solid #ff4d4d; width: 100%; }
         form { width: 100%; }
         input[type="text"] { 
             width: 100%; 
-            background: #f9f9f9; 
-            border: 1px solid #ccc; 
+            background: #1e0f29; 
+            border: 1px solid #3a1f4c; 
             border-radius: 12px; 
             padding: 16px; 
-            font-size: 16px; 
-            color: #000; 
+            font-size: 17px; 
+            color: #ffffff; 
             outline: none; 
             margin-bottom: 20px; 
             text-align: center;
             letter-spacing: 1px;
         }
-        input[type="text"]:focus { border-color: #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.2); }
+        input[type="text"]:focus { border-color: #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.3); }
         .submit-btn { 
             width: 100%; 
             background: #28a745; 
@@ -190,7 +176,7 @@ def step2():
             border: none; 
             border-radius: 12px; 
             padding: 16px; 
-            font-size: 16px; 
+            font-size: 17px; 
             font-weight: 600; 
             cursor: pointer; 
             transition: background 0.2s;
@@ -199,7 +185,7 @@ def step2():
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="container">
         <div class="logo-container">
             <div class="glowing-circle"></div>
             <div class="mod-title">PATRICK MOD</div>
@@ -239,8 +225,8 @@ def step3():
     <style>
         * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
         body {{ 
-            background: #f4f4f5; 
-            color: #1a1a1a;
+            background: #130718; 
+            color: #ffffff;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -248,30 +234,23 @@ def step3():
             width: 100vw; 
             padding: 20px; 
         }}
-        .box {{ 
-            background: #ffffff; 
+        .container {{ 
             width: 100%; 
-            max-width: 480px; 
-            min-height: 620px; 
-            padding: 80px 30px; 
-            border-radius: 24px; 
-            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); 
+            max-width: 450px; 
             text-align: center; 
-            border: 1px solid #e0e0e0; 
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
         }}
         .logo-container {{
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }}
         .glowing-circle {{
-            width: 130px;
-            height: 130px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             border: 3px solid #ff0000;
             box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
@@ -280,15 +259,15 @@ def step3():
         }}
         .mod-title {{
             color: #ff2a2a;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
         }}
-        p {{ color: #444; font-size: 14.5px; line-height: 1.6; margin-bottom: 20px; }}
+        p {{ color: #dddddd; font-size: 15.5px; line-height: 1.6; margin-bottom: 20px; }}
         .cred-box {{ 
-            background: #f9f9f9; 
-            border: 1px solid #ccc; 
+            background: #1e0f29; 
+            border: 1px solid #3a1f4c; 
             border-radius: 12px; 
             padding: 16px; 
             margin-bottom: 22px; 
@@ -296,7 +275,7 @@ def step3():
             direction: ltr;
             width: 100%;
         }}
-        .cred-item {{ color: #ff2a2a; font-size: 14px; margin-bottom: 6px; font-family: monospace; font-weight: bold; }}
+        .cred-item {{ color: #ff2a2a; font-size: 15px; margin-bottom: 8px; font-family: monospace; font-weight: bold; }}
         .login-btn {{ 
             display: block; 
             width: 100%; 
@@ -305,7 +284,7 @@ def step3():
             border: none; 
             border-radius: 12px; 
             padding: 16px; 
-            font-size: 16px; 
+            font-size: 17px; 
             font-weight: 600; 
             text-decoration: none; 
             cursor: pointer; 
@@ -315,7 +294,7 @@ def step3():
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="container">
         <div class="logo-container">
             <div class="glowing-circle"></div>
             <div class="mod-title">PATRICK MOD</div>
