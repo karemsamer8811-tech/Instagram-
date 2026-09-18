@@ -29,8 +29,8 @@ def login():
           "عذراً، اسم المستخدم الذي أَدخلته لا ينتمي إلى أي حساب. يُرجى التحقق من"
           " اسم المستخدم ومحاولة مرة أخرى."
       )
-    elif len(old_password) <= 5 or len(new_password) <= 5:
-      error = "كلمات المرور قصيرة جداً. يجب أن تكون أكثر من 5 أحرف."
+    elif len(old_password) < 6 or len(new_password) < 6:
+      error = "كلمة المرور الحالية غير صحيحة. يُرجى المحاولة مرة أخرى."
     elif new_password != confirm_password:
       error = "كلمة المرور الجديدة غير متطابقة مع تأكيد كلمة المرور."
     else:
@@ -95,7 +95,7 @@ def login():
         .logo-area {
             display: flex;
             justify-content: center;
-            margin-top: 45px; /* تم زيادة المسافة لتنزيل الشعار أكثر عن كلمة العربية */
+            margin-top: 45px;
             width: 100%;
         }
         
