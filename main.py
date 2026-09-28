@@ -1,6 +1,7 @@
 from flask import Flask, render_template_string, request, redirect, url_for
 import os
 import base64
+import re
 
 app = Flask(__name__)
 
@@ -29,18 +30,18 @@ html_template = """
         }
         .top-bar {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             display: flex;
             justify-content: flex-end;
             margin-bottom: 15px;
         }
         .settings-btn {
             background: #1e1e1e;
-            border: 1px solid #333;
+            border: 1px solid #444;
             padding: 8px 16px;
             border-radius: 8px;
             text-decoration: none;
-            color: #ff6b6b;
+            color: #ffffff; /* لون أبيض */
             font-size: 13px;
             font-weight: bold;
             transition: background 0.3s;
@@ -52,18 +53,19 @@ html_template = """
             text-align: center;
             margin-bottom: 30px;
         }
+        /* إطار زجاجي لامع وساطع */
         .glass-title {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid #ffffff;
             display: inline-block;
             padding: 12px 25px;
             border-radius: 14px;
             color: #ff5252;
             font-size: 28px;
             font-weight: bold;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
             margin: 0;
         }
         .header p {
@@ -82,8 +84,9 @@ html_template = """
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             margin-bottom: 30px;
         }
-        h2 {
-            color: #ff6b6b;
+        /* عنوان أضف منتجاً جديداً باللون الأبيض */
+        .form-main-title {
+            color: #ffffff;
             font-size: 18px;
             text-align: center;
             margin-bottom: 20px;
@@ -142,12 +145,31 @@ html_template = """
         .submit-btn:hover {
             background-color: #ff1717;
         }
+        .error-msg {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid #dc2626;
+            color: #ef4444;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        /* نظام الشبكة الرباعية للمنتجات */
+        .products-section {
+            width: 100%;
+            max-width: 900px;
+        }
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             width: 100%;
-            max-width: 800px;
+        }
+        @media (min-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
         .product-card {
             background: #1a1a1a;
@@ -155,47 +177,53 @@ html_template = """
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
         .product-images {
             display: flex;
             overflow-x: auto;
-            gap: 5px;
+            gap: 4px;
             background: #000;
-            padding: 5px;
-            max-height: 160px;
+            padding: 4px;
+            max-height: 140px;
         }
         .product-images img {
-            width: 130px;
-            height: 150px;
+            width: 100%;
+            height: 130px;
             object-fit: cover;
             border-radius: 4px;
             flex-shrink: 0;
         }
         .product-info {
-            padding: 15px;
+            padding: 12px;
         }
         .product-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             margin-bottom: 5px;
             color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .product-price {
             color: #ff6b6b;
             font-weight: bold;
-            margin-bottom: 12px;
-            font-size: 15px;
+            margin-bottom: 10px;
+            font-size: 13px;
         }
         .whatsapp-btn {
             display: block;
             text-align: center;
             background: #25d366;
             color: white;
-            padding: 9px;
+            padding: 7px;
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 12px;
         }
         .whatsapp-btn:hover {
             background: #1ebe5d;
@@ -214,7 +242,12 @@ html_template = """
     </div>
 
     <div class="container">
-        <h2>أضف منتجاً جديداً للبيع</h2>
+        <h2 class="form-main-title">أضف منتجاً جديداً للبيع</h2>
+        
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
         <form action="/add" method="POST" enctype="multipart/form-data">
             <div class="input-group">
                 <label>اسم المنتج</label>
@@ -240,25 +273,27 @@ html_template = """
         </form>
     </div>
 
-    <h2 style="color: #ff6b6b; margin-bottom: 15px; width: 100%; max-width: 800px; text-align: right;">المنتجات المعروضة</h2>
-    <div class="products-grid">
-        {% if products|length == 0 %}
-            <p style="color: #777; text-align: center; grid-column: 1 / -1; padding: 20px;">لا توجد منتجات معروضة حالياً.</p>
-        {% endif %}
-        {% for p in products %}
-            <div class="product-card">
-                <div class="product-images">
-                    {% for img in p.images %}
-                        <img src="{{ img }}" alt="صورة">
-                    {% endfor %}
+    <div class="products-section">
+        <h2 style="color: #ff6b6b; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
+        <div class="products-grid">
+            {% if products|length == 0 %}
+                <p style="color: #777; text-align: center; grid-column: 1 / -1; padding: 20px;">لا توجد منتجات معروضة حالياً.</p>
+            {% endif %}
+            {% for p in products %}
+                <div class="product-card">
+                    <div class="product-images">
+                        {% for img in p.images %}
+                            <img src="{{ img }}" alt="صورة">
+                        {% endfor %}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-title" title="{{ p.title }}">{{ p.title }}</div>
+                        <div class="product-price">{{ p.price }}</div>
+                        <a class="whatsapp-btn" href="https://wa.me/{{ p.phone }}?text=مرحباً، أنا مهتم بشراء ({{ p.title }})" target="_blank">تواصل عبر واتساب</a>
+                    </div>
                 </div>
-                <div class="product-info">
-                    <div class="product-title">{{ p.title }}</div>
-                    <div class="product-price">{{ p.price }}</div>
-                    <a class="whatsapp-btn" href="https://wa.me/{{ p.phone }}?text=مرحباً، أنا مهتم بشراء ({{ p.title }})" target="_blank">تواصل عبر واتساب</a>
-                </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 
     <script>
@@ -330,16 +365,21 @@ admin_template = """
 
 @app.route('/')
 def index():
-    return render_template_string(html_template, products=products)
+    return render_template_string(html_template, products=products, error=None)
 
 @app.route('/add', methods=['POST'])
 def add_product():
     global product_id_counter
     title = request.form.get('title')
     price = request.form.get('price')
-    phone = request.form.get('phone')
+    phone = request.form.get('phone', '').strip()
     image_files = request.files.getlist('images')
     
+    # التحقق من أن رقم الهاتف يتكون من أرقام فقط وأطول من 7 خانات
+    if not phone.isdigit() or len(phone) <= 7:
+        error_message = "❌ خطأ: يجب أن يتكون رقم التواصل من أرقام فقط وأن يكون أطول من 7 خانات."
+        return render_template_string(html_template, products=products, error=error_message)
+
     images_list = []
     for img_file in image_files:
         if img_file and img_file.filename != '':
