@@ -1,3 +1,5 @@
+تفضل! تم إعادة ترتيب الصفحة بحيث تصبح "المنتجات المعروضة" في البداية، يليها زر "إاضافة منتج" أنيق. عند الضغط على هذا الزر، ستفتح أو تنكشف قائمة أو نافذة إدخال بيانات المنتج الجديد مباشرة.
+قم بنسخ هذا الكود بالكامل واستبداله داخل ملف main.py على GitHub:
 from flask import Flask, render_template_string, request, redirect, url_for
 import os
 import base64
@@ -41,7 +43,7 @@ html_template = """
             padding: 8px 16px;
             border-radius: 8px;
             text-decoration: none;
-            color: #ffffff; /* لون أبيض */
+            color: #ffffff;
             font-size: 13px;
             font-weight: bold;
             transition: background 0.3s;
@@ -53,19 +55,17 @@ html_template = """
             text-align: center;
             margin-bottom: 30px;
         }
-        /* إطار زجاجي لامع وساطع */
+        /* خلفية حمراء مع إطار أبيض لامع ونصوص بيضاء */
         .glass-title {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: #ff5252;
             border: 2px solid #ffffff;
             display: inline-block;
             padding: 12px 25px;
             border-radius: 14px;
-            color: #ff5252;
+            color: #ffffff;
             font-size: 28px;
             font-weight: bold;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
             margin: 0;
         }
         .header p {
@@ -74,6 +74,27 @@ html_template = """
             margin: 10px 0 0 0;
             letter-spacing: 0.5px;
         }
+        
+        /* زر إظهار/إخفاء نموذج الإضافة */
+        .toggle-form-btn {
+            background-color: #ff5252;
+            color: white;
+            border: 2px solid #ffffff;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
+            transition: all 0.3s ease;
+        }
+        .toggle-form-btn:hover {
+            background-color: #ff1717;
+            transform: scale(1.02);
+        }
+
+        /* صندوق النموذج المخفي افتراضياً ويظهر عند النقر */
         .container {
             background: #1a1a1a;
             border: 1px solid #2c2c2c;
@@ -83,8 +104,12 @@ html_template = """
             max-width: 600px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             margin-bottom: 30px;
+            display: none; /* مخفي في البداية */
         }
-        /* عنوان أضف منتجاً جديداً باللون الأبيض */
+        .container.active {
+            display: block; /* يظهر عند النقر */
+        }
+
         .form-main-title {
             color: #ffffff;
             font-size: 18px;
@@ -155,10 +180,12 @@ html_template = """
             font-size: 13px;
             margin-bottom: 15px;
         }
-        /* نظام الشبكة الرباعية للمنتجات */
+        
+        /* قسم المنتجات في الأعلى */
         .products-section {
             width: 100%;
             max-width: 900px;
+            margin-bottom: 20px;
         }
         .products-grid {
             display: grid;
@@ -241,38 +268,7 @@ html_template = """
         <p>لكل قطعة حكاية</p>
     </div>
 
-    <div class="container">
-        <h2 class="form-main-title">أضف منتجاً جديداً للبيع</h2>
-        
-        {% if error %}
-            <div class="error-msg">{{ error }}</div>
-        {% endif %}
-
-        <form action="/add" method="POST" enctype="multipart/form-data">
-            <div class="input-group">
-                <label>اسم المنتج</label>
-                <input type="text" name="title" placeholder="أدخل اسم المنتج" required>
-            </div>
-            <div class="input-group">
-                <label>السعر</label>
-                <input type="text" name="price" placeholder="أدخل السعر" required>
-            </div>
-            
-            <div class="input-group">
-                <label>رقم التواصل</label>
-                <input type="text" name="phone" placeholder="رقم التواصل" required>
-            </div>
-            
-            <div class="file-upload" onclick="document.getElementById('imagesInput').click();">
-                اضغط هنا لاختيار صور المنتج (يمكنك اختيار أكثر من صورة) 📸
-                <input type="file" id="imagesInput" name="images" multiple accept="image/*" style="display: none;" onchange="showCount(this)">
-            </div>
-            <div id="file-count" style="font-size: 12px; color: #aaa; margin-bottom: 15px; text-align: center;"></div>
-
-            <button type="submit" class="submit-btn">نشر المنتج</button>
-        </form>
-    </div>
-
+    <!-- 1. قسم المنتجات المعروضة أولاً -->
     <div class="products-section">
         <h2 style="color: #ff6b6b; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
         <div class="products-grid">
@@ -296,7 +292,64 @@ html_template = """
         </div>
     </div>
 
+    <!-- 2. زر إضافة منتج -->
+    <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">➕ إضافة منتج</button>
+
+    <!-- 3. قائمة الإدخال (تفتح عند الضغط على الزر) -->
+    <div class="container {% if error %}active{% endif %}" id="formContainer">
+        <h2 class="form-main-title">أضف منتجاً جديداً للبيع</h2>
+        
+        {% if error %}
+            <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form action="/add" method="POST" enctype="multipart/form-data">
+            <div class="input-group">
+                <label>اسم المنتج</label>
+                <input type="text" name="title" placeholder="أدخل اسم المنتج" required>
+            </div>
+            <div class="input-group">
+                <label>السعر</label>
+                <input type="text" name="price" placeholder="أدخل السعر" required>
+            </div>
+            
+            <div class="input-group">
+                <label>رقم التواصل</label>
+                <input type="text" name="phone" placeholder="رقم التواصل" required>
+            </div>
+            
+            <div class="file-upload" onclick="document.getElementById('imagesInput').click();">
+                اضغط هنا لاختيار صور المنتج 📸
+                <input type="file" id="imagesInput" name="images" multiple accept="image/*" style="display: none;" onchange="showCount(this)">
+            </div>
+            <div id="file-count" style="font-size: 12px; color: #aaa; margin-bottom: 15px; text-align: center;"></div>
+
+            <button type="submit" class="submit-btn">نشر المنتج</button>
+        </form>
+    </div>
+
     <script>
+        function toggleForm() {
+            const container = document.getElementById('formContainer');
+            const btn = document.getElementById('toggleBtn');
+            if (container.style.display === 'block') {
+                container.style.display = 'none';
+                btn.innerText = '➕ إضافة منتج';
+            } else {
+                container.style.display = 'block';
+                btn.innerText = '✖ إغلاق القائمة';
+                container.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // إذا حدث خطأ أثناء الإرسال، اجعل القائمة مفتوحة تلقائياً
+        window.onload = function() {
+            {% if error %}
+                document.getElementById('formContainer').style.display = 'block';
+                document.getElementById('toggleBtn').innerText = '✖ إغلاق القائمة';
+            {% endif %}
+        };
+
         function showCount(input) {
             if(input.files.length > 0) {
                 document.getElementById('file-count').innerText = "✅ تم اختيار " + input.files.length + " صورة.";
@@ -420,3 +473,4 @@ def delete_product(p_id):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
