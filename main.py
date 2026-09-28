@@ -13,8 +13,8 @@ ADMIN_PASSWORD = "samemomomo**1"
 site_controls = {
     "block_posting": False,  
     "enable_search": True,
-    "enable_socials": True,       # تفعيل أو إيقاف عرض حسابات التواصل
-    "enable_copyright": True,     # تفعيل أو إيقاف عرض قسم حقوق النشر
+    "enable_socials": True,       
+    "enable_copyright": True,     
     "social_links": [
         {"name": "إنستغرام", "url": "#"},
         {"name": "تيليجرام", "url": "#"}
@@ -48,6 +48,7 @@ site_config = {
         "search_placeholder": "🔍 ابحث عن عنصر أو منتج..."
     },
     "colors": {
+        "bg_color": "#000000",             
         "title": "#ff5252",                
         "subtitle": "#aaaaaa",             
         "products_heading": "#ffffff",     
@@ -72,7 +73,7 @@ html_template = """
     <title>{{ config.title }}</title>
     <style>
         body {
-            background-color: #000000;
+            background-color: {{ config.colors.bg_color }};
             {% if config.bg_image %}
             background-image: url('{{ config.bg_image }}');
             background-size: cover;
@@ -346,7 +347,6 @@ html_template = """
             margin-bottom: 15px;
         }
 
-        /* تذييل الصفحة (Footer) للحسابات وحقوق النشر */
         .site-footer {
             width: 100%;
             max-width: 900px;
@@ -468,7 +468,6 @@ html_template = """
     </div>
     {% endif %}
 
-    <!-- تذييل الصفحة (حسابات التواصل وحقوق النشر) -->
     {% if controls.enable_socials or controls.enable_copyright %}
     <footer class="site-footer">
         {% if controls.enable_socials and controls.social_links|length > 0 %}
@@ -544,7 +543,7 @@ product_detail_template = """
     <title>{{ product.title }} - {{ config.title }}</title>
     <style>
         body {
-            background-color: #000000;
+            background-color: {{ config.colors.bg_color }};
             color: #ffffff;
             font-family: Tahoma, sans-serif;
             margin: 0;
@@ -800,6 +799,10 @@ admin_template = """
 
                     <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #222222; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
                     
+                    <div class="row-item">
+                        <span>لون خلفية الموقع:</span>
+                        <input type="color" name="c_bg_color" value="{{ config.colors.bg_color }}">
+                    </div>
                     <div class="row-item">
                         <span>عنوان الموقع الرئيسي:</span>
                         <input type="color" name="c_title" value="{{ config.colors.title }}">
