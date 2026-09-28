@@ -9,12 +9,11 @@ products = []
 product_id_counter = 1
 ADMIN_PASSWORD = "samemomomo**1"
 
-# إعدادات واجهة الموقع الافتراضية والتفصيلية للنصوص والجمل والألوان
+# إعدادات واجهة الموقع الافتراضية
 site_config = {
     "title": "عتيق | Atiq",
     "subtitle": "لكل قطعة حكاية",
     "bg_image": "",
-    # النصوص القابلة للتعديل من لوحة الإعدادات
     "texts": {
         "heading_products": "المنتجات المعروضة",
         "no_products": "لا توجد منتجات معروضة حالياً.",
@@ -31,9 +30,9 @@ site_config = {
         "input_contact_placeholder": "أدخل حساب الانستغرام أو الرقم",
         "upload_text": "اضغط هنا لاختيار صور المنتج 📸",
         "submit_btn": "نشر المنتج",
-        "whatsapp_btn": "تواصل عبر واتساب / انستغرام"
+        "back_home": "← العودة إلى المتجر الرئيسي",
+        "view_details": "عرض التفاصيل"
     },
-    # الألوان التفصيلية لكل جزء
     "colors": {
         "title": "#ff5252",                
         "subtitle": "#aaaaaa",             
@@ -151,6 +150,12 @@ html_template = """
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: scale(1.02);
+            border-color: #444;
         }
         .product-images {
             display: flex;
@@ -310,7 +315,7 @@ html_template = """
                 <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;">{{ config.texts.no_products }}</p>
             {% endif %}
             {% for p in products %}
-                <div class="product-card">
+                <a href="/product/{{ p.id }}" class="product-card">
                     <div class="product-images">
                         {% for img in p.images %}
                             <img src="{{ img }}" alt="صورة">
@@ -319,13 +324,9 @@ html_template = """
                     <div class="product-info">
                         <div class="product-title" title="{{ p.title }}">{{ p.title }}</div>
                         <div class="product-price">{{ p.price }}</div>
-                        {% if p.contact_type == 'instagram' %}
-                            <a class="contact-btn" href="https://instagram.com/{{ p.contact_value.replace('@', '') }}" target="_blank">انستغرام: {{ p.contact_value }}</a>
-                        {% else %}
-                            <a class="contact-btn" href="https://wa.me/{{ p.contact_value }}" target="_blank">تواصل: {{ p.contact_value }}</a>
-                        {% endif %}
+                        <span class="contact-btn">{{ config.texts.view_details }}</span>
                     </div>
-                </div>
+                </a>
             {% endfor %}
         </div>
     </div>
@@ -393,6 +394,106 @@ html_template = """
             }
         }
     </script>
+</body>
+</html>
+"""
+
+product_detail_template = """
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.title }} - {{ config.title }}</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: Tahoma, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .detail-container {
+            background: #111111;
+            border: 1px solid #222;
+            border-radius: 14px;
+            padding: 25px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.9);
+            margin-top: 20px;
+            text-align: center;
+        }
+        .gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .gallery img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: contain;
+            border-radius: 8px;
+            background: #000;
+            border: 1px solid #333;
+        }
+        .product-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: {{ config.colors.product_title }};
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 18px;
+            color: {{ config.colors.product_price }};
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .contact-btn {
+            display: block;
+            text-align: center;
+            background: {{ config.colors.whatsapp_btn }};
+            color: white;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 15px;
+        }
+        .back-link {
+            display: inline-block;
+            color: #25d366;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="detail-container">
+        <h1 class="product-title">{{ product.title }}</h1>
+        <div class="product-price">{{ product.price }}</div>
+        
+        <div class="gallery">
+            {% for img in product.images %}
+                <img src="{{ img }}" alt="صورة المنتج">
+            {% endfor %}
+        </div>
+
+        {% if product.contact_type == 'instagram' %}
+            <a class="contact-btn" href="https://instagram.com/{{ product.contact_value.replace('@', '') }}" target="_blank">انستغرام: {{ product.contact_value }}</a>
+        {% else %}
+            <a class="contact-btn" href="https://wa.me/{{ product.contact_value }}" target="_blank">تواصل: {{ product.contact_value }}</a>
+        {% endif %}
+
+        <a href="/" class="back-link">{{ config.texts.back_home }}</a>
+    </div>
 </body>
 </html>
 """
@@ -541,6 +642,13 @@ admin_template = """
 def index():
     return render_template_string(html_template, products=products, config=site_config, error=None)
 
+@app.route('/product/<int:p_id>')
+def product_detail(p_id):
+    product = next((p for p in products if p['id'] == p_id), None)
+    if not product:
+        return redirect(url_for('index'))
+    return render_template_string(product_detail_template, product=product, config=site_config)
+
 @app.route('/add', methods=['POST'])
 def add_product():
     global product_id_counter
@@ -550,7 +658,6 @@ def add_product():
     contact_value = request.form.get('contact_value', '').strip()
     image_files = request.files.getlist('images')
     
-    # الشرط الجديد: ألا يقل المدخل عن 5 أحرف وألا يحتوي على كلمات غير مرغوب فيها أو مسافات فارغة غير صالحة
     if len(contact_value) <= 5:
         error_message = "❌ خطأ: رقم التواصل غير صحيح (يجب أن يكون أطول من 5 أحرف)."
         return render_template_string(html_template, products=products, config=site_config, error=error_message)
@@ -593,13 +700,11 @@ def update_config():
     site_config['title'] = request.form.get('title', site_config['title'])
     site_config['subtitle'] = request.form.get('subtitle', site_config['subtitle'])
     
-    # تحديث النصوص والجمل من لوحة التحكم
     for key in site_config['texts']:
         form_txt = request.form.get(f'txt_{key}')
         if form_txt:
             site_config['texts'][key] = form_txt
 
-    # تحديث الألوان
     for key in site_config['colors']:
         form_val = request.form.get(f'c_{key}')
         if form_val:
