@@ -786,7 +786,12 @@ admin_template = """
                     <input type="text" name="subtitle" value="{{ config.subtitle }}" required>
 
                     <label>صورة خلفية الواجهة (من المعرض):</label>
-                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #ffffff;">
+                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 10px; color: #ffffff;">
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: #000; padding: 8px 12px; border-radius: 6px; border: 1px solid #222; margin-bottom: 15px;">
+                        <span style="font-size: 13px; color: #ccc;">إلغاء وإزالة صورة الخلفية الحالية؟</span>
+                        <input type="checkbox" name="remove_bg_image" style="width: 18px; height: 18px; cursor: pointer;">
+                    </div>
 
                     <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #222222; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
                     
@@ -1003,6 +1008,10 @@ def update_config():
         if form_val:
             site_config['colors'][key] = form_val
     
+    # التحقق من رغبة إزالة صورة الخلفية الحالية
+    if request.form.get('remove_bg_image') == 'on':
+        site_config['bg_image'] = ""
+
     bg_file = request.files.get('bg_image_file')
     if bg_file and bg_file.filename != '':
         bg_bytes = bg_file.read()
