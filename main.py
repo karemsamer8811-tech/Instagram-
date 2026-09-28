@@ -31,7 +31,9 @@ site_config = {
         "upload_text": "اضغط هنا لاختيار صور المنتج 📸",
         "submit_btn": "نشر المنتج",
         "back_home": "← العودة إلى المتجر الرئيسي",
-        "view_details": "عرض التفاصيل"
+        "view_details": "عرض التفاصيل",
+        # الميزة المستقبلية القابلة للتفعيل والتعديل من الإعدادات
+        "future_feature_text": "🔍 ميزة مستقبلية (مثلاً: بحث أو تنبيهات قادمة)"
     },
     "colors": {
         "title": "#ff5252",                
@@ -125,6 +127,21 @@ html_template = """
             letter-spacing: 0.5px;
         }
         
+        /* تصميم صندوق الميزة المستقبلية */
+        .future-feature-box {
+            width: 100%;
+            max-width: 900px;
+            background: #111111;
+            border: 1px dashed #25d366;
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
         .products-section {
             width: 100%;
             max-width: 900px;
@@ -160,17 +177,26 @@ html_template = """
         .product-images {
             display: flex;
             overflow-x: auto;
-            gap: 4px;
+            gap: 6px;
             background: #000;
-            padding: 4px;
-            max-height: 140px;
+            padding: 6px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .product-images::-webkit-scrollbar {
+            height: 4px;
+        }
+        .product-images::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
         }
         .product-images img {
-            width: 100%;
-            height: 130px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
-            border-radius: 4px;
+            border-radius: 6px;
             flex-shrink: 0;
+            scroll-snap-align: start;
         }
         .product-info {
             padding: 12px;
@@ -306,6 +332,11 @@ html_template = """
     <div class="header">
         <h1 class="glass-title">{{ config.title }}</h1>
         <p>{{ config.subtitle }}</p>
+    </div>
+
+    <!-- خانة الميزة المستقبلية تظهر هنا -->
+    <div class="future-feature-box">
+        {{ config.texts.future_feature_text }}
     </div>
 
     <div class="products-section">
