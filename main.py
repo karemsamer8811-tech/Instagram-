@@ -11,8 +11,15 @@ ADMIN_PASSWORD = "samemomomo**1"
 
 # إعدادات التحكم والخواص
 site_controls = {
-    "block_posting": False,  # منع النشر (True = ممتنع، False = مسموح)
-    "enable_search": True   # تفعيل شريط البحث
+    "block_posting": False,  
+    "enable_search": True,
+    "enable_socials": True,       # تفعيل أو إيقاف عرض حسابات التواصل
+    "enable_copyright": True,     # تفعيل أو إيقاف عرض قسم حقوق النشر
+    "social_links": [
+        {"name": "إنستغرام", "url": "#"},
+        {"name": "تيليجرام", "url": "#"}
+    ],
+    "copyright_text": "جميع الحقوق محفوظة © عتيق 2026. تم تصميم وتطوير المنصة بعناية فائقة."
 }
 
 # إعدادات واجهة الموقع الافتراضية
@@ -78,6 +85,8 @@ html_template = """
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         {% if config.bg_image %}
         body::before {
@@ -132,7 +141,6 @@ html_template = """
             letter-spacing: 0.5px;
         }
         
-        /* شريط البحث */
         .search-box {
             width: 100%;
             max-width: 900px;
@@ -158,6 +166,7 @@ html_template = """
             width: 100%;
             max-width: 900px;
             margin-bottom: 20px;
+            flex: 1;
         }
         .products-grid {
             display: grid;
@@ -336,6 +345,49 @@ html_template = """
             font-size: 13px;
             margin-bottom: 15px;
         }
+
+        /* تذييل الصفحة (Footer) للحسابات وحقوق النشر */
+        .site-footer {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 40px;
+            padding: 20px 0;
+            border-top: 1px solid #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+        }
+        .footer-socials {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .footer-social-link {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 13px;
+            background: #111;
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #222;
+            transition: color 0.3s, border-color 0.3s;
+        }
+        .footer-social-link:hover {
+            color: #25d366;
+            border-color: #25d366;
+        }
+        .footer-copyright {
+            color: #666;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-copyright:hover {
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -414,6 +466,23 @@ html_template = """
             <button type="submit" class="submit-btn">{{ config.texts.submit_btn }}</button>
         </form>
     </div>
+    {% endif %}
+
+    <!-- تذييل الصفحة (حسابات التواصل وحقوق النشر) -->
+    {% if controls.enable_socials or controls.enable_copyright %}
+    <footer class="site-footer">
+        {% if controls.enable_socials and controls.social_links|length > 0 %}
+        <div class="footer-socials">
+            {% for s in controls.social_links %}
+                <a href="{{ s.url }}" target="_blank" class="footer-social-link">{{ s.name }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        {% if controls.enable_copyright %}
+        <a href="/copyright" class="footer-copyright">حقوق النشر والشروط</a>
+        {% endif %}
+    </footer>
     {% endif %}
 
     <script>
@@ -578,31 +647,56 @@ product_detail_template = """
 </html>
 """
 
+copyright_template = """
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حقوق النشر والشروط</title>
+    <style>
+        body { background: #000; color: #fff; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .box { background: #111; border: 1px solid #222; padding: 30px; border-radius: 12px; max-width: 600px; width: 100%; margin-top: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); line-height: 1.8; }
+        h1 { color: #25d366; text-align: center; font-size: 20px; margin-bottom: 20px; }
+        p { color: #ddd; font-size: 14px; white-space: pre-wrap; word-break: break-word; }
+        .back { display: block; text-align: center; margin-top: 25px; color: #25d366; text-decoration: none; font-weight: bold; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>حقوق النشر والشروط</h1>
+        <p>{{ text }}</p>
+        <a href="/" class="back">← العودة إلى المتجر الرئيسي</a>
+    </div>
+</body>
+</html>
+"""
+
 admin_template = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - عتيق</title>
+    <title>لوحة الإعدادات والتحكم</title>
     <style>
-        body { background: #000; color: #e0e0e0; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: #111; padding: 25px; border-radius: 12px; border: 1px solid #222; width: 100%; max-width: 650px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-top: 20px; }
-        h2, h3 { color: #25d366; text-align: center; margin-bottom: 20px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; font-size: 13px; outline: none; }
-        input[type="color"] { width: 50px; height: 32px; border: 1px solid #333; border-radius: 6px; background: #000; cursor: pointer; padding: 0; vertical-align: middle; }
-        button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
-        button:hover { background: #1ebe5d; }
-        .product-row { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #222; }
+        body { background: #ffffff; color: #18181b; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: #ffffff; padding: 25px; border-radius: 12px; border: 1px solid #e4e4e7; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-top: 20px; }
+        h2, h3 { color: #16a34a; text-align: center; margin-bottom: 20px; }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #d4d4d8; background: #fafafa; color: #18181b; box-sizing: border-box; font-size: 13px; outline: none; }
+        input[type="color"] { width: 50px; height: 32px; border: 1px solid #d4d4d8; border-radius: 6px; background: #fafafa; cursor: pointer; padding: 0; vertical-align: middle; }
+        button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #16a34a; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
+        button:hover { background: #15803d; }
+        .product-row { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e4e4e7; }
         .delete-btn { background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; font-size: 13px; }
         .delete-btn:hover { background: #b91c1c; }
-        .back-link { display: block; text-align: center; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .section-box { border-top: 1px solid #222; margin-top: 25px; padding-top: 20px; }
-        .row-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #050505; padding: 6px 10px; border-radius: 6px; border: 1px solid #222; }
-        .row-item span { font-size: 12px; color: #ccc; width: 40%; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #16a34a; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .section-box { border-top: 1px solid #e4e4e7; margin-top: 25px; padding-top: 20px; }
+        .row-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #fafafa; padding: 6px 10px; border-radius: 6px; border: 1px solid #e4e4e7; }
+        .row-item span { font-size: 12px; color: #52525b; width: 40%; }
         .row-item input[type="text"] { width: 58%; margin: 0; }
-        label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
-        .checkbox-label { display: flex; align-items: center; gap: 10px; background: #050505; padding: 10px; border-radius: 8px; border: 1px solid #222; cursor: pointer; margin-bottom: 10px; font-size: 14px; color: #fff; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; color: #3f3f46; font-weight: bold; }
+        .checkbox-label { display: flex; align-items: center; gap: 10px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #e4e4e7; cursor: pointer; margin-bottom: 10px; font-size: 14px; color: #18181b; font-weight: normal; }
         .checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
     </style>
 </head>
@@ -611,7 +705,7 @@ admin_template = """
         <h2>لوحة الإعدادات والتحكم</h2>
         {% if not authorized %}
             <form method="POST">
-                <p style="margin-bottom: 12px; font-size: 14px; color: #aaa; text-align: center;">الرجاء إدخال رمز المرور للوصول:</p>
+                <p style="margin-bottom: 12px; font-size: 14px; color: #52525b; text-align: center;">الرجاء إدخال رمز المرور للوصول:</p>
                 <input type="password" name="password" placeholder="رمز المرور" required>
                 <button type="submit">دخول</button>
             </form>
@@ -633,7 +727,53 @@ admin_template = """
                         <input type="checkbox" name="enable_search" {% if controls.enable_search %}checked{% endif %}>
                         تفعيل شريط البحث عن العناصر في الواجهة
                     </label>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="enable_socials" {% if controls.enable_socials %}checked{% endif %}>
+                        تفعيل وعرض حسابات التواصل الاجتماعي في أسفل المتجر
+                    </label>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="enable_copyright" {% if controls.enable_copyright %}checked{% endif %}>
+                        تفعيل وعرض صفحة وحقوق النشر في أسفل المتجر
+                    </label>
+
                     <button type="submit" style="margin-top: 10px;">حفظ الخصائص</button>
+                </form>
+            </div>
+
+            <div class="section-box">
+                <h3>إدارة حسابات التواصل (تظهر أسفل المتجر)</h3>
+                <form action="/update-socials" method="POST">
+                    <label>اسم الحساب الأول:</label>
+                    <input type="text" name="s1_name" value="{{ controls.social_links[0].name if controls.social_links|length > 0 else '' }}" placeholder="مثال: إنستغرام">
+                    <label>رابط الحساب الأول:</label>
+                    <input type="text" name="s1_url" value="{{ controls.social_links[0].url if controls.social_links|length > 0 else '' }}" placeholder="https://instagram.com/...">
+
+                    <label style="margin-top: 15px;">اسم الحساب الثاني:</label>
+                    <input type="text" name="s2_name" value="{{ controls.social_links[1].name if controls.social_links|length > 1 else '' }}" placeholder="مثال: تيليجرام">
+                    <label>رابط الحساب الثاني:</label>
+                    <input type="text" name="s2_url" value="{{ controls.social_links[1].url if controls.social_links|length > 1 else '' }}" placeholder="https://t.me/...">
+
+                    <button type="submit" style="margin-top: 10px;">حفظ الحسابات</button>
+                </form>
+            </div>
+
+            <div class="section-box">
+                <h3>تعديل صفحة حقوق النشر</h3>
+                <form action="/update-copyright" method="POST">
+                    <label>النص الذي سيظهر في صفحة حقوق النشر:</label>
+                    <textarea name="copyright_text" rows="5" required>{{ controls.copyright_text }}</textarea>
+                    <button type="submit">حفظ نص حقوق النشر</button>
+                </form>
+            </div>
+
+            <div class="section-box">
+                <h3>تغيير كلمة المرور</h3>
+                <form action="/update-password" method="POST">
+                    <label>كلمة المرور الجديدة:</label>
+                    <input type="password" name="new_password" placeholder="أدخل كلمة المرور الجديدة" required>
+                    <button type="submit">تحديث كلمة المرور</button>
                 </form>
             </div>
 
@@ -647,9 +787,9 @@ admin_template = """
                     <input type="text" name="subtitle" value="{{ config.subtitle }}" required>
 
                     <label>صورة خلفية الواجهة (من المعرض):</label>
-                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #aaa;">
+                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #52525b;">
 
-                    <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
+                    <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #d4d4d8; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
                     
                     {% for key, val in config.texts.items() %}
                         <div class="row-item">
@@ -658,7 +798,7 @@ admin_template = """
                         </div>
                     {% endfor %}
 
-                    <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
+                    <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #d4d4d8; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
                     
                     <div class="row-item">
                         <span>عنوان الموقع الرئيسي:</span>
@@ -717,7 +857,7 @@ admin_template = """
                 <h3>قائمة المنتجات (للحذف)</h3>
                 <div>
                     {% if products|length == 0 %}
-                        <p style="color: #777; text-align: center; padding: 15px;">لا توجد منتجات مسجلة حالياً.</p>
+                        <p style="color: #71717a; text-align: center; padding: 15px;">لا توجد منتجات مسجلة حالياً.</p>
                     {% endif %}
                     {% for p in products %}
                         <div class="product-row">
@@ -746,6 +886,12 @@ def product_detail(p_id):
     if not product:
         return redirect(url_for('index'))
     return render_template_string(product_detail_template, product=product, config=site_config)
+
+@app.route('/copyright')
+def copyright_page():
+    if not site_controls['enable_copyright']:
+        return redirect(url_for('index'))
+    return render_template_string(copyright_template, text=site_controls['copyright_text'])
 
 @app.route('/add', methods=['POST'])
 def add_product():
@@ -785,6 +931,7 @@ def add_product():
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
+    global ADMIN_PASSWORD
     authorized = False
     error = False
     if request.method == 'POST':
@@ -800,6 +947,41 @@ def update_controls():
     global site_controls
     site_controls['block_posting'] = True if request.form.get('block_posting') == 'on' else False
     site_controls['enable_search'] = True if request.form.get('enable_search') == 'on' else False
+    site_controls['enable_socials'] = True if request.form.get('enable_socials') == 'on' else False
+    site_controls['enable_copyright'] = True if request.form.get('enable_copyright') == 'on' else False
+    return redirect(url_for('admin'))
+
+@app.route('/update-socials', methods=['POST'])
+def update_socials():
+    global site_controls
+    s1_name = request.form.get('s1_name', '').strip()
+    s1_url = request.form.get('s1_url', '').strip()
+    s2_name = request.form.get('s2_name', '').strip()
+    s2_url = request.form.get('s2_url', '').strip()
+    
+    new_links = []
+    if s1_name and s1_url:
+        new_links.append({"name": s1_name, "url": s1_url})
+    if s2_name and s2_url:
+        new_links.append({"name": s2_name, "url": s2_url})
+        
+    site_controls['social_links'] = new_links
+    return redirect(url_for('admin'))
+
+@app.route('/update-copyright', methods=['POST'])
+def update_copyright():
+    global site_controls
+    text = request.form.get('copyright_text', '').strip()
+    if text:
+        site_controls['copyright_text'] = text
+    return redirect(url_for('admin'))
+
+@app.route('/update-password', methods=['POST'])
+def update_password():
+    global ADMIN_PASSWORD
+    new_pwd = request.form.get('new_password', '').strip()
+    if new_pwd:
+        ADMIN_PASSWORD = new_pwd
     return redirect(url_for('admin'))
 
 @app.route('/update-config', methods=['POST'])
