@@ -76,6 +76,7 @@ site_config = {
         "bg_color": "#000000",             
         "title": "#ff5252",                
         "subtitle": "#aaaaaa",             
+        "logo_bg": "#000000",              
         "logo_border": "#ffffff",          
         "products_heading": "#ffffff",     
         "no_products": "#777777",          
@@ -150,7 +151,7 @@ html_template = """
             margin-bottom: 25px;
         }
         .glass-title {
-            background: #000000;
+            background: {{ config.colors.logo_bg }};
             border: 2px solid {{ config.colors.logo_border }};
             display: inline-block;
             padding: 12px 25px;
@@ -875,6 +876,10 @@ admin_template = """
                     <div class="row-item">
                         <span>عنوان الموقع الرئيسي:</span>
                         <input type="color" name="c_title" value="{{ config.colors.title }}">
+                    </div>
+                    <div class="row-item">
+                        <span>لون خلفية مربع الشعار:</span>
+                        <input type="color" name="c_logo_bg" value="{{ config.colors.logo_bg }}">
                     </div>
                     <div class="row-item">
                         <span>إطار وتوهج مربع الشعار (Atiq):</span>
