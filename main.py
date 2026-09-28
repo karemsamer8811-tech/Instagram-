@@ -13,7 +13,11 @@ ADMIN_PASSWORD = "samemomomo**1"
 site_config = {
     "title": "عتيق | Atiq",
     "subtitle": "لكل قطعة حكاية",
-    "text_color": "#e0e0e0"
+    "general_text_color": "#e0e0e0",
+    "title_color": "#ff5252",          # لون عنوان الموقع الرئيسي
+    "subtitle_color": "#aaaaaa",       # لون الوصف/الشعار تحت الاسم
+    "products_heading_color": "#ffffff", # لون عبارة "المنتجات المعروضة"
+    "bg_image": ""                     # خلفية الموقع من المعرض (إن وجدت)
 }
 
 html_template = """
@@ -25,8 +29,14 @@ html_template = """
     <title>{{ config.title }}</title>
     <style>
         body {
-            background-color: #000000; /* خلفية سوداء كاملة */
-            color: {{ config.text_color }};
+            background-color: #000000;
+            {% if config.bg_image %}
+            background-image: url('{{ config.bg_image }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            {% endif %}
+            color: {{ config.general_text_color }};
             font-family: Tahoma, sans-serif;
             margin: 0;
             padding: 20px;
@@ -34,6 +44,16 @@ html_template = """
             flex-direction: column;
             align-items: center;
         }
+        {% if config.bg_image %}
+        /* طبقة تعتيم خفيفة لوضعت خلفية مخصصة لضمان وضوح النصوص */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: -1;
+        }
+        {% endif %}
         .top-bar {
             width: 100%;
             max-width: 900px;
@@ -59,27 +79,25 @@ html_template = """
             text-align: center;
             margin-bottom: 25px;
         }
-        /* خلفية عتيق سوداء بإطار أبيض لامع */
         .glass-title {
             background: #000000;
             border: 2px solid #ffffff;
             display: inline-block;
             padding: 12px 25px;
             border-radius: 14px;
-            color: #ffffff;
+            color: {{ config.title_color }};
             font-size: 28px;
             font-weight: bold;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
             margin: 0;
         }
         .header p {
-            color: #aaaaaa;
+            color: {{ config.subtitle_color }};
             font-size: 13px;
             margin: 10px 0 0 0;
             letter-spacing: 0.5px;
         }
         
-        /* قسم المنتجات في الأعلى */
         .products-section {
             width: 100%;
             max-width: 900px;
@@ -154,7 +172,6 @@ html_template = """
             background: #1ebe5d;
         }
 
-        /* زر إضافة منتج باللون الأخضر مع إطار أبيض لامع */
         .toggle-form-btn {
             background-color: #25d366;
             color: white;
@@ -173,7 +190,6 @@ html_template = """
             transform: scale(1.02);
         }
 
-        /* صندوق النموذج */
         .container {
             background: #111111;
             border: 1px solid #222;
@@ -204,7 +220,7 @@ html_template = """
             font-size: 13px;
             color: #ccc;
         }
-        .input-group input {
+        .input-group input[type="text"], .input-group input[type="password"] {
             width: 100%;
             padding: 12px;
             border: 1px solid #333;
@@ -272,9 +288,8 @@ html_template = """
         <p>{{ config.subtitle }}</p>
     </div>
 
-    <!-- 1. المنتجات المعروضة أولاً -->
     <div class="products-section">
-        <h2 style="color: #25d366; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
+        <h2 style="color: {{ config.products_heading_color }}; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
         <div class="products-grid">
             {% if products|length == 0 %}
                 <p style="color: #777; text-align: center; grid-column: 1 / -1; padding: 20px;">لا توجد منتجات معروضة حالياً.</p>
@@ -296,10 +311,8 @@ html_template = """
         </div>
     </div>
 
-    <!-- 2. زر إضافة منتج أخضر -->
     <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">➕ إضافة منتج</button>
 
-    <!-- 3. قائمة الإدخال -->
     <div class="container {% if error %}active{% endif %}" id="formContainer">
         <h2 class="form-main-title">أضف منتجاً جديداً للبيع</h2>
         
@@ -316,12 +329,10 @@ html_template = """
                 <label>السعر</label>
                 <input type="text" name="price" placeholder="أدخل السعر" required>
             </div>
-            
             <div class="input-group">
                 <label>رقم التواصل</label>
                 <input type="text" name="phone" placeholder="رقم التواصل" required>
             </div>
-            
             <div class="file-upload" onclick="document.getElementById('imagesInput').click();">
                 اضغط هنا لاختيار صور المنتج 📸
                 <input type="file" id="imagesInput" name="images" multiple accept="image/*" style="display: none;" onchange="showCount(this)">
@@ -374,15 +385,16 @@ admin_template = """
         body { background: #000; color: #e0e0e0; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { background: #111; padding: 25px; border-radius: 12px; border: 1px solid #222; width: 100%; max-width: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-top: 20px; }
         h2, h3 { color: #25d366; text-align: center; margin-bottom: 20px; }
-        input, select, button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
-        input:focus, select:focus { border-color: #25d366; }
-        button { background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        input[type="text"], input[type="password"], select { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
+        input[type="color"] { width: 100%; height: 40px; border: 1px solid #333; border-radius: 8px; background: #000; cursor: pointer; margin-bottom: 15px; padding: 0 5px; }
+        button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
         button:hover { background: #1ebe5d; }
         .product-row { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #222; }
         .delete-btn { background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; font-size: 13px; }
         .delete-btn:hover { background: #b91c1c; }
         .back-link { display: block; text-align: center; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 14px; font-weight: bold; }
         .section-box { border-top: 1px solid #222; margin-top: 25px; padding-top: 20px; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
     </style>
 </head>
 <body>
@@ -400,29 +412,34 @@ admin_template = """
         {% else %}
             <p style="color: #16a34a; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
-            <!-- قسم تعديل واجهة الموقع -->
             <div class="section-box">
-                <h3>تعديل واجهة الموقع</h3>
-                <form action="/update-config" method="POST">
-                    <label style="font-size: 13px; color: #ccc;">اسم الموقع:</label>
+                <h3>تعديل واجهة ومظهر الموقع</h3>
+                <form action="/update-config" method="POST" enctype="multipart/form-data">
+                    <label>اسم الموقع:</label>
                     <input type="text" name="title" value="{{ config.title }}" required>
                     
-                    <label style="font-size: 13px; color: #ccc;">شعار / وصف الموقع:</label>
+                    <label>شعار / وصف الموقع:</label>
                     <input type="text" name="subtitle" value="{{ config.subtitle }}" required>
+
+                    <label>صورة خلفية الواجهة (من المعرض):</label>
+                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #aaa;">
+
+                    <label>لون عنوان الموقع الرئيسي (داخل الشعار):</label>
+                    <input type="color" name="title_color" value="{{ config.title_color }}">
+
+                    <label>لون الوصف / الشعار:</label>
+                    <input type="color" name="subtitle_color" value="{{ config.subtitle_color }}">
+
+                    <label>لون عبارة "المنتجات المعروضة":</label>
+                    <input type="color" name="products_heading_color" value="{{ config.products_heading_color }}">
+
+                    <label>لون النصوص العامة للموقع:</label>
+                    <input type="color" name="general_text_color" value="{{ config.general_text_color }}">
                     
-                    <label style="font-size: 13px; color: #ccc;">لون النص:</label>
-                    <select name="text_color">
-                        <option value="#e0e0e0" {% if config.text_color == '#e0e0e0' %}selected{% endif %}>رمادي فاتح (افتراضي)</option>
-                        <option value="#ffffff" {% if config.text_color == '#ffffff' %}selected{% endif %}>أبيض ناصع</option>
-                        <option value="#25d366" {% if config.text_color == '#25d366' %}selected{% endif %}>أخضر</option>
-                        <option value="#ff5252" {% if config.text_color == '#ff5252' %}selected{% endif %}>أحمر</option>
-                    </select>
-                    
-                    <button type="submit">حفظ تعديلات الواجهة</button>
+                    <button type="submit">حفظ التعديلات والتصميم</button>
                 </form>
             </div>
 
-            <!-- قسم إدارة المنتجات -->
             <div class="section-box">
                 <h3>قائمة المنتجات (للحذف)</h3>
                 <div>
@@ -498,7 +515,17 @@ def update_config():
     global site_config
     site_config['title'] = request.form.get('title', site_config['title'])
     site_config['subtitle'] = request.form.get('subtitle', site_config['subtitle'])
-    site_config['text_color'] = request.form.get('text_color', site_config['text_color'])
+    site_config['general_text_color'] = request.form.get('general_text_color', site_config['general_text_color'])
+    site_config['title_color'] = request.form.get('title_color', site_config['title_color'])
+    site_config['subtitle_color'] = request.form.get('subtitle_color', site_config['subtitle_color'])
+    site_config['products_heading_color'] = request.form.get('products_heading_color', site_config['products_heading_color'])
+    
+    bg_file = request.files.get('bg_image_file')
+    if bg_file and bg_file.filename != '':
+        bg_bytes = bg_file.read()
+        bg_base64 = base64.b64encode(bg_bytes).decode('utf-8')
+        site_config['bg_image'] = f"data:image/jpeg;base64,{bg_base64}"
+        
     return redirect(url_for('admin'))
 
 @app.route('/delete/<int:p_id>', methods=['POST'])
