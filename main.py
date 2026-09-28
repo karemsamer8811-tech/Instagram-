@@ -188,26 +188,29 @@ html_template = """
         }
         .product-images {
             display: flex;
+            flex-direction: row;
             overflow-x: auto;
-            gap: 6px;
+            gap: 8px;
             background: #000;
-            padding: 6px;
+            padding: 8px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
+            width: 100%;
+            box-sizing: border-box;
         }
         .product-images::-webkit-scrollbar {
-            height: 4px;
+            height: 6px;
         }
         .product-images::-webkit-scrollbar-thumb {
             background: #444;
             border-radius: 4px;
         }
         .product-images img {
-            width: 120px;
-            height: 120px;
+            width: 100%;
+            height: 140px;
             object-fit: cover;
             border-radius: 6px;
-            flex-shrink: 0;
+            flex: 0 0 100%;
             scroll-snap-align: start;
         }
         .product-info {
@@ -359,7 +362,7 @@ html_template = """
                 <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;" id="noProductsMsg">{{ config.texts.no_products }}</p>
             {% endif %}
             {% for p in products %}
-                <a href="/product/{{ p.id }}" class="product-card" data-title="{{ p.title }}">
+                <div class="product-card" data-title="{{ p.title }}">
                     <div class="product-images">
                         {% for img in p.images %}
                             <img src="{{ img }}" alt="صورة">
@@ -368,9 +371,9 @@ html_template = """
                     <div class="product-info">
                         <div class="product-title" title="{{ p.title }}">{{ p.title }}</div>
                         <div class="product-price">{{ p.price }}</div>
-                        <span class="contact-btn">{{ config.texts.view_details }}</span>
+                        <a href="/product/{{ p.id }}" class="contact-btn">{{ config.texts.view_details }}</a>
                     </div>
-                </a>
+                </div>
             {% endfor %}
         </div>
     </div>
@@ -494,9 +497,19 @@ product_detail_template = """
         }
         .gallery {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            flex-direction: row;
+            overflow-x: auto;
+            gap: 10px;
             margin-bottom: 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+        .gallery::-webkit-scrollbar {
+            height: 6px;
+        }
+        .gallery::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
         }
         .gallery img {
             width: 100%;
@@ -505,6 +518,8 @@ product_detail_template = """
             border-radius: 8px;
             background: #000;
             border: 1px solid #333;
+            flex: 0 0 100%;
+            scroll-snap-align: start;
         }
         .product-title {
             font-size: 22px;
