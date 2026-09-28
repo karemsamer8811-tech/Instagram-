@@ -80,6 +80,7 @@ site_config = {
         "logo_border": "#ffffff",          
         "products_heading": "#ffffff",     
         "no_products": "#777777",          
+        "product_bg": "#111111",           # لون خلفية بطاقة المنتج الجديدة
         "product_title": "#ffffff",        
         "product_price": "#25d366",        
         "whatsapp_btn": "#25d366",         
@@ -206,7 +207,7 @@ html_template = """
             }
         }
         .product-card {
-            background: #111111;
+            background: {{ config.colors.product_bg }};
             border: 1px solid #222222;
             border-radius: 10px;
             overflow: hidden;
@@ -944,6 +945,10 @@ admin_template = """
                         <input type="color" name="c_no_products" value="{{ config.colors.no_products }}">
                     </div>
                     <div class="row-item">
+                        <span>لون خلفية بطاقة المنتج:</span>
+                        <input type="color" name="c_product_bg" value="{{ config.colors.product_bg }}">
+                    </div>
+                    <div class="row-item">
                         <span>عنوان المنتج:</span>
                         <input type="color" name="c_product_title" value="{{ config.colors.product_title }}">
                     </div>
@@ -1154,7 +1159,7 @@ def update_socials():
 @app.route('/update-copyright', methods=['POST'])
 def update_copyright():
     global site_controls
-    text = request.request.form.get('copyright_text', '').strip() if hasattr(request, 'request') else request.form.get('copyright_text', '').strip()
+    text = request.form.get('copyright_text', '').strip()
     if text:
         site_controls['copyright_text'] = text
     return redirect(url_for('admin'))
