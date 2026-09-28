@@ -14,7 +14,8 @@ site_controls = {
     "block_posting": False,  
     "enable_search": True,
     "enable_socials": True,       
-    "enable_copyright": True,     
+    "enable_copyright": True,
+    "enable_contact_btn": True,   # خيار تشغيل أو إطفاء زر التواصل
     "social_links": [
         {"name": "إنستغرام", "url": "#"},
         {"name": "تيليجرام", "url": "#"}
@@ -22,7 +23,7 @@ site_controls = {
     "copyright_text": "جميع الحقوق محفوظة © عتيق 2026. تم تصميم وتطوير المنصة بعناية فائقة."
 }
 
-# إعدادات واجهة الموقع الافتراضية
+# إعدادات واجهة الموقع الافتراضية والنصوص
 site_config = {
     "title": "عتيق | Atiq",
     "subtitle": "لكل قطعة حكاية",
@@ -45,7 +46,8 @@ site_config = {
         "submit_btn": "نشر المنتج",
         "back_home": "← العودة إلى المتجر الرئيسي",
         "view_details": "عرض التفاصيل",
-        "search_placeholder": "🔍 ابحث عن عنصر أو منتج..."
+        "search_placeholder": "🔍 ابحث عن عنصر أو منتج...",
+        "contact_word": "تواصل"  # الكلمة الجديدة للتحكم بنص زر التواصل
     },
     "colors": {
         "bg_color": "#000000",             
@@ -141,7 +143,6 @@ html_template = """
             margin: 10px 0 0 0;
             letter-spacing: 0.5px;
         }
-        
         .search-box {
             width: 100%;
             max-width: 900px;
@@ -162,7 +163,6 @@ html_template = """
         .search-input:focus {
             border-color: #25d366;
         }
-
         .products-section {
             width: 100%;
             max-width: 900px;
@@ -253,7 +253,6 @@ html_template = """
             font-size: 11px;
             word-break: break-all;
         }
-
         .toggle-form-btn {
             background-color: {{ config.colors.toggle_btn }};
             color: white;
@@ -267,7 +266,6 @@ html_template = """
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             transition: all 0.3s ease;
         }
-
         .container {
             background: #111111;
             border: 1px solid #222;
@@ -282,7 +280,6 @@ html_template = """
         .container.active {
             display: block;
         }
-
         .form-main-title {
             color: {{ config.colors.form_main_title }};
             font-size: 18px;
@@ -346,7 +343,6 @@ html_template = """
             font-size: 13px;
             margin-bottom: 15px;
         }
-
         .site-footer {
             width: 100%;
             max-width: 900px;
@@ -634,10 +630,12 @@ product_detail_template = """
             {% endfor %}
         </div>
 
-        {% if product.contact_type == 'instagram' %}
-            <a class="contact-btn" href="https://instagram.com/{{ product.contact_value.replace('@', '') }}" target="_blank">انستغرام: {{ product.contact_value }}</a>
-        {% else %}
-            <a class="contact-btn" href="https://wa.me/{{ product.contact_value }}" target="_blank">تواصل: {{ product.contact_value }}</a>
+        {% if controls.enable_contact_btn %}
+            {% if product.contact_type == 'instagram' %}
+                <a class="contact-btn" href="https://instagram.com/{{ product.contact_value.replace('@', '') }}" target="_blank">{{ config.texts.contact_word }}: {{ product.contact_value }}</a>
+            {% else %}
+                <a class="contact-btn" href="https://wa.me/{{ product.contact_value }}" target="_blank">{{ config.texts.contact_word }}: {{ product.contact_value }}</a>
+            {% endif %}
         {% endif %}
 
         <a href="/" class="back-link">{{ config.texts.back_home }}</a>
@@ -715,7 +713,7 @@ admin_template = """
             <p style="color: #25d366; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
             <div class="section-box">
-                <h3>إدارة الخصائص والميزات</h3>
+                <h3>إدارة الخصائص والميزات والأزرار</h3>
                 <form action="/update-controls" method="POST">
                     <label class="checkbox-label">
                         <input type="checkbox" name="block_posting" {% if controls.block_posting %}checked{% endif %}>
@@ -725,6 +723,11 @@ admin_template = """
                     <label class="checkbox-label">
                         <input type="checkbox" name="enable_search" {% if controls.enable_search %}checked{% endif %}>
                         تفعيل شريط البحث عن العناصر في الواجهة
+                    </label>
+
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="enable_contact_btn" {% if controls.enable_contact_btn %}checked{% endif %}>
+                        تفعيل وعرض زر ورقم/طريقة التواصل في صفحة تفاصيل المنتج
                     </label>
 
                     <label class="checkbox-label">
@@ -893,7 +896,7 @@ def product_detail(p_id):
     product = next((p for p in products if p['id'] == p_id), None)
     if not product:
         return redirect(url_for('index'))
-    return render_template_string(product_detail_template, product=product, config=site_config)
+    return render_template_string(product_detail_template, product=product, config=site_config, controls=site_controls)
 
 @app.route('/copyright')
 def copyright_page():
@@ -955,6 +958,7 @@ def update_controls():
     global site_controls
     site_controls['block_posting'] = True if request.form.get('block_posting') == 'on' else False
     site_controls['enable_search'] = True if request.form.get('enable_search') == 'on' else False
+    site_controls['enable_contact_btn'] = True if request.form.get('enable_contact_btn') == 'on' else False
     site_controls['enable_socials'] = True if request.form.get('enable_socials') == 'on' else False
     site_controls['enable_copyright'] = True if request.form.get('enable_copyright') == 'on' else False
     return redirect(url_for('admin'))
@@ -1008,7 +1012,6 @@ def update_config():
         if form_val:
             site_config['colors'][key] = form_val
     
-    # التحقق من رغبة إزالة صورة الخلفية الحالية
     if request.form.get('remove_bg_image') == 'on':
         site_config['bg_image'] = ""
 
