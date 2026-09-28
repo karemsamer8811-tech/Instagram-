@@ -9,6 +9,12 @@ products = []
 product_id_counter = 1
 ADMIN_PASSWORD = "samemomomo**1"
 
+# إعدادات التحكم والخواص
+site_controls = {
+    "block_posting": False,  # منع النشر (True = ممتنع، False = مسموح)
+    "enable_search": True   # تفعيل شريط البحث
+}
+
 # إعدادات واجهة الموقع الافتراضية
 site_config = {
     "title": "عتيق | Atiq",
@@ -32,8 +38,7 @@ site_config = {
         "submit_btn": "نشر المنتج",
         "back_home": "← العودة إلى المتجر الرئيسي",
         "view_details": "عرض التفاصيل",
-        # الميزة المستقبلية القابلة للتفعيل والتعديل من الإعدادات
-        "future_feature_text": "🔍 ميزة مستقبلية (مثلاً: بحث أو تنبيهات قادمة)"
+        "search_placeholder": "🔍 ابحث عن عنصر أو منتج..."
     },
     "colors": {
         "title": "#ff5252",                
@@ -127,19 +132,26 @@ html_template = """
             letter-spacing: 0.5px;
         }
         
-        /* تصميم صندوق الميزة المستقبلية */
-        .future-feature-box {
+        /* شريط البحث */
+        .search-box {
             width: 100%;
             max-width: 900px;
-            background: #111111;
-            border: 1px dashed #25d366;
-            border-radius: 10px;
-            padding: 12px 20px;
             margin-bottom: 20px;
-            text-align: center;
-            color: #ffffff;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 18px;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 10px;
+            color: white;
             font-size: 14px;
             box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-input:focus {
+            border-color: #25d366;
         }
 
         .products-section {
@@ -334,19 +346,20 @@ html_template = """
         <p>{{ config.subtitle }}</p>
     </div>
 
-    <!-- خانة الميزة المستقبلية تظهر هنا -->
-    <div class="future-feature-box">
-        {{ config.texts.future_feature_text }}
+    {% if controls.enable_search %}
+    <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="{{ config.texts.search_placeholder }}" onkeyup="filterProducts()">
     </div>
+    {% endif %}
 
     <div class="products-section">
         <h2 style="color: {{ config.colors.products_heading }}; margin-bottom: 15px; text-align: right;">{{ config.texts.heading_products }}</h2>
-        <div class="products-grid">
+        <div class="products-grid" id="productsGrid">
             {% if products|length == 0 %}
-                <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;">{{ config.texts.no_products }}</p>
+                <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;" id="noProductsMsg">{{ config.texts.no_products }}</p>
             {% endif %}
             {% for p in products %}
-                <a href="/product/{{ p.id }}" class="product-card">
+                <a href="/product/{{ p.id }}" class="product-card" data-title="{{ p.title }}">
                     <div class="product-images">
                         {% for img in p.images %}
                             <img src="{{ img }}" alt="صورة">
@@ -362,6 +375,7 @@ html_template = """
         </div>
     </div>
 
+    {% if not controls.block_posting %}
     <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">{{ config.texts.toggle_btn_open }}</button>
 
     <div class="container {% if error %}active{% endif %}" id="formContainer">
@@ -397,6 +411,7 @@ html_template = """
             <button type="submit" class="submit-btn">{{ config.texts.submit_btn }}</button>
         </form>
     </div>
+    {% endif %}
 
     <script>
         function toggleForm() {
@@ -414,14 +429,33 @@ html_template = """
 
         window.onload = function() {
             {% if error %}
-                document.getElementById('formContainer').style.display = 'block';
-                document.getElementById('toggleBtn').innerText = '{{ config.texts.toggle_btn_close }}';
+                const container = document.getElementById('formContainer');
+                if(container) {
+                    container.style.display = 'block';
+                    document.getElementById('toggleBtn').innerText = '{{ config.texts.toggle_btn_close }}';
+                }
             {% endif %}
         };
 
         function showCount(input) {
             if(input.files.length > 0) {
                 document.getElementById('file-count').innerText = "✅ تم اختيار " + input.files.length + " صورة.";
+            }
+        }
+
+        function filterProducts() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const grid = document.getElementById('productsGrid');
+            const cards = grid.getElementsByClassName('product-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].getAttribute('data-title').toLowerCase();
+                if (title.includes(filter)) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
             }
         }
     </script>
@@ -553,6 +587,8 @@ admin_template = """
         .row-item span { font-size: 12px; color: #ccc; width: 40%; }
         .row-item input[type="text"] { width: 58%; margin: 0; }
         label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
+        .checkbox-label { display: flex; align-items: center; gap: 10px; background: #050505; padding: 10px; border-radius: 8px; border: 1px solid #222; cursor: pointer; margin-bottom: 10px; font-size: 14px; color: #fff; }
+        .checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -570,6 +606,22 @@ admin_template = """
         {% else %}
             <p style="color: #16a34a; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
+            <div class="section-box">
+                <h3>إدارة الخصائص والميزات</h3>
+                <form action="/update-controls" method="POST">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="block_posting" {% if controls.block_posting %}checked{% endif %}>
+                        منع المستخدمين من إضافة ونشر منتجات جديدة
+                    </label>
+                    
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="enable_search" {% if controls.enable_search %}checked{% endif %}>
+                        تفعيل شريط البحث عن العناصر في الواجهة
+                    </label>
+                    <button type="submit" style="margin-top: 10px;">حفظ الخصائص</button>
+                </form>
+            </div>
+
             <div class="section-box">
                 <h3>تعديل واجهة ومظهر الموقع</h3>
                 <form action="/update-config" method="POST" enctype="multipart/form-data">
@@ -671,7 +723,7 @@ admin_template = """
 
 @app.route('/')
 def index():
-    return render_template_string(html_template, products=products, config=site_config, error=None)
+    return render_template_string(html_template, products=products, config=site_config, controls=site_controls, error=None)
 
 @app.route('/product/<int:p_id>')
 def product_detail(p_id):
@@ -683,6 +735,9 @@ def product_detail(p_id):
 @app.route('/add', methods=['POST'])
 def add_product():
     global product_id_counter
+    if site_controls['block_posting']:
+        return redirect(url_for('index'))
+        
     title = request.form.get('title')
     price = request.form.get('price')
     contact_type = request.form.get('contact_type')
@@ -691,7 +746,7 @@ def add_product():
     
     if len(contact_value) <= 5:
         error_message = "❌ خطأ: رقم التواصل غير صحيح (يجب أن يكون أطول من 5 أحرف)."
-        return render_template_string(html_template, products=products, config=site_config, error=error_message)
+        return render_template_string(html_template, products=products, config=site_config, controls=site_controls, error=error_message)
 
     images_list = []
     for img_file in image_files:
@@ -723,7 +778,14 @@ def admin():
             authorized = True
         else:
             error = True
-    return render_template_string(admin_template, products=products, config=site_config, authorized=authorized, error=error)
+    return render_template_string(admin_template, products=products, config=site_config, controls=site_controls, authorized=authorized, error=error)
+
+@app.route('/update-controls', methods=['POST'])
+def update_controls():
+    global site_controls
+    site_controls['block_posting'] = True if request.form.get('block_posting') == 'on' else False
+    site_controls['enable_search'] = True if request.form.get('enable_search') == 'on' else False
+    return redirect(url_for('admin'))
 
 @app.route('/update-config', methods=['POST'])
 def update_config():
