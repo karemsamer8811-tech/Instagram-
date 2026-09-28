@@ -1,7 +1,6 @@
 from flask import Flask, render_template_string, request, redirect, url_for
 import os
 import base64
-import re
 
 app = Flask(__name__)
 
@@ -10,17 +9,24 @@ products = []
 product_id_counter = 1
 ADMIN_PASSWORD = "samemomomo**1"
 
+# إعدادات واجهة الموقع الافتراضية القابلة للتعديل من لوحة التحكم
+site_config = {
+    "title": "عتيق | Atiq",
+    "subtitle": "لكل قطعة حكاية",
+    "text_color": "#e0e0e0"
+}
+
 html_template = """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عتيق | Atiq</title>
+    <title>{{ config.title }}</title>
     <style>
         body {
-            background-color: #121212;
-            color: #e0e0e0;
+            background-color: #000000; /* خلفية سوداء كاملة */
+            color: {{ config.text_color }};
             font-family: Tahoma, sans-serif;
             margin: 0;
             padding: 20px;
@@ -53,8 +59,9 @@ html_template = """
             text-align: center;
             margin-bottom: 25px;
         }
+        /* خلفية عتيق سوداء بإطار أبيض لامع */
         .glass-title {
-            background: #ff5252;
+            background: #000000;
             border: 2px solid #ffffff;
             display: inline-block;
             padding: 12px 25px;
@@ -62,7 +69,7 @@ html_template = """
             color: #ffffff;
             font-size: 28px;
             font-weight: bold;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
             margin: 0;
         }
         .header p {
@@ -90,11 +97,11 @@ html_template = """
             }
         }
         .product-card {
-            background: #1a1a1a;
-            border: 1px solid #2c2c2c;
+            background: #111111;
+            border: 1px solid #222222;
             border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -127,7 +134,7 @@ html_template = """
             text-overflow: ellipsis;
         }
         .product-price {
-            color: #ff6b6b;
+            color: #25d366;
             font-weight: bold;
             margin-bottom: 10px;
             font-size: 13px;
@@ -147,9 +154,9 @@ html_template = """
             background: #1ebe5d;
         }
 
-        /* زر إضافة منتج */
+        /* زر إضافة منتج باللون الأخضر مع إطار أبيض لامع */
         .toggle-form-btn {
-            background-color: #ff5252;
+            background-color: #25d366;
             color: white;
             border: 2px solid #ffffff;
             padding: 12px 25px;
@@ -158,23 +165,23 @@ html_template = """
             font-weight: bold;
             cursor: pointer;
             margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             transition: all 0.3s ease;
         }
         .toggle-form-btn:hover {
-            background-color: #ff1717;
+            background-color: #1ebe5d;
             transform: scale(1.02);
         }
 
-        /* صندوق النموذج المخفي افتراضياً ويفتح عند النقر */
+        /* صندوق النموذج */
         .container {
-            background: #1a1a1a;
-            border: 1px solid #2c2c2c;
+            background: #111111;
+            border: 1px solid #222;
             border-radius: 12px;
             padding: 20px;
             width: 100%;
             max-width: 600px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
             margin-bottom: 30px;
             display: none;
         }
@@ -202,7 +209,7 @@ html_template = """
             padding: 12px;
             border: 1px solid #333;
             border-radius: 8px;
-            background: #121212;
+            background: #000000;
             box-sizing: border-box;
             font-size: 14px;
             color: white;
@@ -210,25 +217,25 @@ html_template = """
             transition: border-color 0.3s;
         }
         .input-group input:focus {
-            border-color: #ff6b6b;
+            border-color: #25d366;
         }
         .file-upload {
-            border: 2px dashed #ff6b6b;
+            border: 2px dashed #25d366;
             border-radius: 8px;
             padding: 15px;
             text-align: center;
-            background: rgba(255, 107, 107, 0.03);
+            background: rgba(37, 211, 102, 0.03);
             cursor: pointer;
             margin-bottom: 10px;
-            color: #ff6b6b;
+            color: #25d366;
             font-size: 13px;
             transition: background 0.3s;
         }
         .file-upload:hover {
-            background: rgba(255, 107, 107, 0.08);
+            background: rgba(37, 211, 102, 0.08);
         }
         .submit-btn {
-            background-color: #ff5252;
+            background-color: #25d366;
             color: white;
             border: none;
             width: 100%;
@@ -240,7 +247,7 @@ html_template = """
             transition: background 0.3s;
         }
         .submit-btn:hover {
-            background-color: #ff1717;
+            background-color: #1ebe5d;
         }
         .error-msg {
             background: rgba(220, 38, 38, 0.1);
@@ -261,13 +268,13 @@ html_template = """
     </div>
 
     <div class="header">
-        <h1 class="glass-title">عتيق | Atiq</h1>
-        <p>لكل قطعة حكاية</p>
+        <h1 class="glass-title">{{ config.title }}</h1>
+        <p>{{ config.subtitle }}</p>
     </div>
 
     <!-- 1. المنتجات المعروضة أولاً -->
     <div class="products-section">
-        <h2 style="color: #ff6b6b; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
+        <h2 style="color: #25d366; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
         <div class="products-grid">
             {% if products|length == 0 %}
                 <p style="color: #777; text-align: center; grid-column: 1 / -1; padding: 20px;">لا توجد منتجات معروضة حالياً.</p>
@@ -289,10 +296,10 @@ html_template = """
         </div>
     </div>
 
-    <!-- 2. زر إضافة منتج -->
+    <!-- 2. زر إضافة منتج أخضر -->
     <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">➕ إضافة منتج</button>
 
-    <!-- 3. قائمة الإدخال (تفتح عند الضغط على الزر) -->
+    <!-- 3. قائمة الإدخال -->
     <div class="container {% if error %}active{% endif %}" id="formContainer">
         <h2 class="form-main-title">أضف منتجاً جديداً للبيع</h2>
         
@@ -364,17 +371,18 @@ admin_template = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة التحكم - عتيق</title>
     <style>
-        body { background: #121212; color: #e0e0e0; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: #1a1a1a; padding: 25px; border-radius: 12px; border: 1px solid #2c2c2c; width: 100%; max-width: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); margin-top: 20px; }
-        h2 { color: #ff6b6b; text-align: center; margin-bottom: 20px; }
-        input, button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #121212; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
-        input:focus { border-color: #ff6b6b; }
-        button { background: #ff5252; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; }
-        button:hover { background: #ff1717; }
-        .product-row { display: flex; justify-content: space-between; align-items: center; background: #121212; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #2c2c2c; }
+        body { background: #000; color: #e0e0e0; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: #111; padding: 25px; border-radius: 12px; border: 1px solid #222; width: 100%; max-width: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-top: 20px; }
+        h2, h3 { color: #25d366; text-align: center; margin-bottom: 20px; }
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: #25d366; }
+        button { background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; }
+        button:hover { background: #1ebe5d; }
+        .product-row { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #222; }
         .delete-btn { background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; font-size: 13px; }
         .delete-btn:hover { background: #b91c1c; }
-        .back-link { display: block; text-align: center; margin-top: 20px; color: #ff6b6b; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .section-box { border-top: 1px solid #222; margin-top: 25px; padding-top: 20px; }
     </style>
 </head>
 <body>
@@ -391,19 +399,45 @@ admin_template = """
             {% endif %}
         {% else %}
             <p style="color: #16a34a; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
-            <h3 style="font-size: 16px; margin-bottom: 15px; color: #ccc;">قائمة المنتجات (للحذف):</h3>
-            <div>
-                {% if products|length == 0 %}
-                    <p style="color: #777; text-align: center; padding: 15px;">لا توجد منتجات مسجلة حالياً.</p>
-                {% endif %}
-                {% for p in products %}
-                    <div class="product-row">
-                        <span><b>{{ p.title }}</b> ({{ p.price }})</span>
-                        <form action="/delete/{{ p.id }}" method="POST" style="margin:0;">
-                            <button type="submit" class="delete-btn">حذف</button>
-                        </form>
-                    </div>
-                {% endfor %}
+            
+            <!-- قسم تعديل واجهة الموقع -->
+            <div class="section-box">
+                <h3>تعديل واجهة الموقع</h3>
+                <form action="/update-config" method="POST">
+                    <label style="font-size: 13px; color: #ccc;">اسم الموقع:</label>
+                    <input type="text" name="title" value="{{ config.title }}" required>
+                    
+                    <label style="font-size: 13px; color: #ccc;">شعار / وصف الموقع:</label>
+                    <input type="text" name="subtitle" value="{{ config.subtitle }}" required>
+                    
+                    <label style="font-size: 13px; color: #ccc;">لون النص:</label>
+                    <select name="text_color">
+                        <option value="#e0e0e0" {% if config.text_color == '#e0e0e0' %}selected{% endif %}>رمادي فاتح (افتراضي)</option>
+                        <option value="#ffffff" {% if config.text_color == '#ffffff' %}selected{% endif %}>أبيض ناصع</option>
+                        <option value="#25d366" {% if config.text_color == '#25d366' %}selected{% endif %}>أخضر</option>
+                        <option value="#ff5252" {% if config.text_color == '#ff5252' %}selected{% endif %}>أحمر</option>
+                    </select>
+                    
+                    <button type="submit">حفظ تعديلات الواجهة</button>
+                </form>
+            </div>
+
+            <!-- قسم إدارة المنتجات -->
+            <div class="section-box">
+                <h3>قائمة المنتجات (للحذف)</h3>
+                <div>
+                    {% if products|length == 0 %}
+                        <p style="color: #777; text-align: center; padding: 15px;">لا توجد منتجات مسجلة حالياً.</p>
+                    {% endif %}
+                    {% for p in products %}
+                        <div class="product-row">
+                            <span><b>{{ p.title }}</b> ({{ p.price }})</span>
+                            <form action="/delete/{{ p.id }}" method="POST" style="margin:0;">
+                                <button type="submit" class="delete-btn">حذف</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
         <a href="/" class="back-link">← العودة إلى المتجر الرئيسي</a>
@@ -414,7 +448,7 @@ admin_template = """
 
 @app.route('/')
 def index():
-    return render_template_string(html_template, products=products, error=None)
+    return render_template_string(html_template, products=products, config=site_config, error=None)
 
 @app.route('/add', methods=['POST'])
 def add_product():
@@ -426,7 +460,7 @@ def add_product():
     
     if not phone.isdigit() or len(phone) <= 7:
         error_message = "❌ خطأ: يجب أن يتكون رقم التواصل من أرقام فقط وأن يكون أطول من 7 خانات."
-        return render_template_string(html_template, products=products, error=error_message)
+        return render_template_string(html_template, products=products, config=site_config, error=error_message)
 
     images_list = []
     for img_file in image_files:
@@ -457,7 +491,15 @@ def admin():
             authorized = True
         else:
             error = True
-    return render_template_string(admin_template, products=products, authorized=authorized, error=error)
+    return render_template_string(admin_template, products=products, config=site_config, authorized=authorized, error=error)
+
+@app.route('/update-config', methods=['POST'])
+def update_config():
+    global site_config
+    site_config['title'] = request.form.get('title', site_config['title'])
+    site_config['subtitle'] = request.form.get('subtitle', site_config['subtitle'])
+    site_config['text_color'] = request.form.get('text_color', site_config['text_color'])
+    return redirect(url_for('admin'))
 
 @app.route('/delete/<int:p_id>', methods=['POST'])
 def delete_product(p_id):
