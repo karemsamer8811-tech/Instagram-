@@ -9,28 +9,44 @@ products = []
 product_id_counter = 1
 ADMIN_PASSWORD = "samemomomo**1"
 
-# إعدادات واجهة الموقع الافتراضية والتفصيلية للنصوص والألوان
+# إعدادات واجهة الموقع الافتراضية والتفصيلية للنصوص والجمل والألوان
 site_config = {
     "title": "عتيق | Atiq",
     "subtitle": "لكل قطعة حكاية",
     "bg_image": "",
-    # ألوان الأجزاء والكلمات المختلفة بشكل تفصيلي
+    # النصوص القابلة للتعديل من لوحة الإعدادات
+    "texts": {
+        "heading_products": "المنتجات المعروضة",
+        "no_products": "لا توجد منتجات معروضة حالياً.",
+        "toggle_btn_open": "➕ إضافة منتج",
+        "toggle_btn_close": "✖ إغلاق القائمة",
+        "form_main_title": "أضف منتجاً جديداً للبيع",
+        "label_title": "اسم المنتج",
+        "input_title_placeholder": "أدخل اسم المنتج",
+        "label_price": "السعر",
+        "input_price_placeholder": "أدخل السعر",
+        "label_contact_method": "طريقة التواصل",
+        "contact_type_instagram": "حساب Instagram",
+        "contact_type_phone": "الرقم الخاص بي",
+        "input_contact_placeholder": "أدخل حساب الانستغرام أو الرقم",
+        "upload_text": "اضغط هنا لاختيار صور المنتج 📸",
+        "submit_btn": "نشر المنتج",
+        "whatsapp_btn": "تواصل عبر واتساب / انستغرام"
+    },
+    # الألوان التفصيلية لكل جزء
     "colors": {
-        "title": "#ff5252",                # اسم الموقع الرئيسي
-        "subtitle": "#aaaaaa",             # شعار / وصف الموقع
-        "products_heading": "#ffffff",     # عبارة "المنتجات المعروضة"
-        "no_products": "#777777",          # جملة لا توجد منتجات
-        "product_title": "#ffffff",        # عنوان المنتج
-        "product_price": "#25d366",        # سعر المنتج
-        "whatsapp_btn": "#25d366",         # زر واتساب
-        "toggle_btn": "#25d366",           # زر إضافة منتج / إغلاق القائمة
-        "form_main_title": "#ffffff",      # عنوان نموذج الإضافة (أضف منتجاً جديداً للبيع)
-        "label_title": "#cccccc",          # كلمة "اسم المنتج"
-        "input_placeholder_title": "#777", # داخل خانة اسم المنتج
-        "label_price": "#cccccc",          # كلمة "السعر"
-        "label_phone": "#cccccc",          # كلمة "رقم التواصل"
-        "upload_text": "#ffffff",          # جملة "اضغط هنا لاختيار صور المنتج"
-        "submit_btn": "#25d366"            # زر نشر المنتج
+        "title": "#ff5252",                
+        "subtitle": "#aaaaaa",             
+        "products_heading": "#ffffff",     
+        "no_products": "#777777",          
+        "product_title": "#ffffff",        
+        "product_price": "#25d366",        
+        "whatsapp_btn": "#25d366",         
+        "toggle_btn": "#25d366",           
+        "form_main_title": "#ffffff",      
+        "label_title": "#cccccc",          
+        "upload_text": "#ffffff",          
+        "submit_btn": "#25d366"            
     }
 }
 
@@ -169,7 +185,7 @@ html_template = """
             margin-bottom: 10px;
             font-size: 13px;
         }
-        .whatsapp-btn {
+        .contact-btn {
             display: block;
             text-align: center;
             background: {{ config.colors.whatsapp_btn }};
@@ -178,7 +194,8 @@ html_template = """
             text-decoration: none;
             border-radius: 6px;
             font-weight: bold;
-            font-size: 12px;
+            font-size: 11px;
+            word-break: break-all;
         }
 
         .toggle-form-btn {
@@ -225,7 +242,7 @@ html_template = """
             font-size: 13px;
             color: {{ config.colors.label_title }};
         }
-        .input-group input[type="text"], .input-group input[type="password"] {
+        .input-group input[type="text"], .input-group input[type="password"], .input-group select {
             width: 100%;
             padding: 12px;
             border: 1px solid #333;
@@ -235,6 +252,7 @@ html_template = """
             font-size: 14px;
             color: white;
             outline: none;
+            margin-bottom: 8px;
         }
         .file-upload {
             border: 2px dashed #25d366;
@@ -286,10 +304,10 @@ html_template = """
     </div>
 
     <div class="products-section">
-        <h2 style="color: {{ config.colors.products_heading }}; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
+        <h2 style="color: {{ config.colors.products_heading }}; margin-bottom: 15px; text-align: right;">{{ config.texts.heading_products }}</h2>
         <div class="products-grid">
             {% if products|length == 0 %}
-                <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;">لا توجد منتجات معروضة حالياً.</p>
+                <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;">{{ config.texts.no_products }}</p>
             {% endif %}
             {% for p in products %}
                 <div class="product-card">
@@ -301,17 +319,21 @@ html_template = """
                     <div class="product-info">
                         <div class="product-title" title="{{ p.title }}">{{ p.title }}</div>
                         <div class="product-price">{{ p.price }}</div>
-                        <a class="whatsapp-btn" href="https://wa.me/{{ p.phone }}?text=مرحباً، أنا مهتم بشراء ({{ p.title }})" target="_blank">تواصل عبر واتساب</a>
+                        {% if p.contact_type == 'instagram' %}
+                            <a class="contact-btn" href="https://instagram.com/{{ p.contact_value.replace('@', '') }}" target="_blank">انستغرام: {{ p.contact_value }}</a>
+                        {% else %}
+                            <a class="contact-btn" href="https://wa.me/{{ p.contact_value }}" target="_blank">تواصل: {{ p.contact_value }}</a>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">➕ إضافة منتج</button>
+    <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">{{ config.texts.toggle_btn_open }}</button>
 
     <div class="container {% if error %}active{% endif %}" id="formContainer">
-        <h2 class="form-main-title">أضف منتجاً جديداً للبيع</h2>
+        <h2 class="form-main-title">{{ config.texts.form_main_title }}</h2>
         
         {% if error %}
             <div class="error-msg">{{ error }}</div>
@@ -319,24 +341,28 @@ html_template = """
 
         <form action="/add" method="POST" enctype="multipart/form-data">
             <div class="input-group">
-                <label style="color: {{ config.colors.label_title }};">اسم المنتج</label>
-                <input type="text" name="title" placeholder="أدخل اسم المنتج" required>
+                <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_title }}</label>
+                <input type="text" name="title" placeholder="{{ config.texts.input_title_placeholder }}" required>
             </div>
             <div class="input-group">
-                <label style="color: {{ config.colors.label_price }};">السعر</label>
-                <input type="text" name="price" placeholder="أدخل السعر" required>
+                <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_price }}</label>
+                <input type="text" name="price" placeholder="{{ config.texts.input_price_placeholder }}" required>
             </div>
             <div class="input-group">
-                <label style="color: {{ config.colors.label_phone }};">رقم التواصل</label>
-                <input type="text" name="phone" placeholder="رقم التواصل" required>
+                <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_contact_method }}</label>
+                <select name="contact_type" required>
+                    <option value="instagram">{{ config.texts.contact_type_instagram }}</option>
+                    <option value="phone">{{ config.texts.contact_type_phone }}</option>
+                </select>
+                <input type="text" name="contact_value" placeholder="{{ config.texts.input_contact_placeholder }}" required>
             </div>
             <div class="file-upload" onclick="document.getElementById('imagesInput').click();">
-                اضغط هنا لاختيار صور المنتج 📸
+                {{ config.texts.upload_text }}
                 <input type="file" id="imagesInput" name="images" multiple accept="image/*" style="display: none;" onchange="showCount(this)">
             </div>
             <div id="file-count" style="font-size: 12px; color: #aaa; margin-bottom: 15px; text-align: center;"></div>
 
-            <button type="submit" class="submit-btn">نشر المنتج</button>
+            <button type="submit" class="submit-btn">{{ config.texts.submit_btn }}</button>
         </form>
     </div>
 
@@ -346,10 +372,10 @@ html_template = """
             const btn = document.getElementById('toggleBtn');
             if (container.style.display === 'block') {
                 container.style.display = 'none';
-                btn.innerText = '➕ إضافة منتج';
+                btn.innerText = '{{ config.texts.toggle_btn_open }}';
             } else {
                 container.style.display = 'block';
-                btn.innerText = '✖ إغلاق القائمة';
+                btn.innerText = '{{ config.texts.toggle_btn_close }}';
                 container.scrollIntoView({ behavior: 'smooth' });
             }
         }
@@ -357,7 +383,7 @@ html_template = """
         window.onload = function() {
             {% if error %}
                 document.getElementById('formContainer').style.display = 'block';
-                document.getElementById('toggleBtn').innerText = '✖ إغلاق القائمة';
+                document.getElementById('toggleBtn').innerText = '{{ config.texts.toggle_btn_close }}';
             {% endif %}
         };
 
@@ -380,10 +406,10 @@ admin_template = """
     <title>لوحة التحكم - عتيق</title>
     <style>
         body { background: #000; color: #e0e0e0; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: #111; padding: 25px; border-radius: 12px; border: 1px solid #222; width: 100%; max-width: 600px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-top: 20px; }
+        .container { background: #111; padding: 25px; border-radius: 12px; border: 1px solid #222; width: 100%; max-width: 650px; box-shadow: 0 4px 20px rgba(0,0,0,0.8); margin-top: 20px; }
         h2, h3 { color: #25d366; text-align: center; margin-bottom: 20px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
-        input[type="color"] { width: 60px; height: 35px; border: 1px solid #333; border-radius: 6px; background: #000; cursor: pointer; padding: 0; vertical-align: middle; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #000; color: white; box-sizing: border-box; font-size: 13px; outline: none; }
+        input[type="color"] { width: 50px; height: 32px; border: 1px solid #333; border-radius: 6px; background: #000; cursor: pointer; padding: 0; vertical-align: middle; }
         button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
         button:hover { background: #1ebe5d; }
         .product-row { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #222; }
@@ -391,8 +417,9 @@ admin_template = """
         .delete-btn:hover { background: #b91c1c; }
         .back-link { display: block; text-align: center; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 14px; font-weight: bold; }
         .section-box { border-top: 1px solid #222; margin-top: 25px; padding-top: 20px; }
-        .color-pick-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; background: #050505; padding: 8px 12px; border-radius: 8px; border: 1px solid #222; }
-        .color-pick-row span { font-size: 13px; color: #ddd; }
+        .row-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #050505; padding: 6px 10px; border-radius: 6px; border: 1px solid #222; }
+        .row-item span { font-size: 12px; color: #ccc; width: 40%; }
+        .row-item input[type="text"] { width: 58%; margin: 0; }
         label { display: block; margin-bottom: 5px; font-size: 13px; color: #ccc; }
     </style>
 </head>
@@ -423,54 +450,63 @@ admin_template = """
                     <label>صورة خلفية الواجهة (من المعرض):</label>
                     <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #aaa;">
 
-                    <h3 style="margin-top: 25px; font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 10px;">تعديل ألوان أجزاء الموقع (كلمة بكلمة)</h3>
+                    <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
                     
-                    <div class="color-pick-row">
-                        <span>عنوان الموقع الرئيسي (داخل الشعار):</span>
+                    {% for key, val in config.texts.items() %}
+                        <div class="row-item">
+                            <span>{{ key }}:</span>
+                            <input type="text" name="txt_{{ key }}" value="{{ val }}" required>
+                        </div>
+                    {% endfor %}
+
+                    <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #333; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
+                    
+                    <div class="row-item">
+                        <span>عنوان الموقع الرئيسي:</span>
                         <input type="color" name="c_title" value="{{ config.colors.title }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>شعار / وصف الموقع:</span>
+                    <div class="row-item">
+                        <span>وصف الموقع:</span>
                         <input type="color" name="c_subtitle" value="{{ config.colors.subtitle }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>عبارة "المنتجات المعروضة":</span>
+                    <div class="row-item">
+                        <span>عنوان المنتجات المعروضة:</span>
                         <input type="color" name="c_products_heading" value="{{ config.colors.products_heading }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>عبارة "لا توجد منتجات معروضة حالياً":</span>
+                    <div class="row-item">
+                        <span>جملة لا توجد منتجات:</span>
                         <input type="color" name="c_no_products" value="{{ config.colors.no_products }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>عنوان المنتج (أسفل الصورة):</span>
+                    <div class="row-item">
+                        <span>عنوان المنتج:</span>
                         <input type="color" name="c_product_title" value="{{ config.colors.product_title }}">
                     </div>
-                    <div class="color-pick-row">
+                    <div class="row-item">
                         <span>سعر المنتج:</span>
                         <input type="color" name="c_product_price" value="{{ config.colors.product_price }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>زر "تواصل عبر واتساب":</span>
+                    <div class="row-item">
+                        <span>زر التواصل:</span>
                         <input type="color" name="c_whatsapp_btn" value="{{ config.colors.whatsapp_btn }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>زر "إضافة منتج / إغلاق القائمة":</span>
+                    <div class="row-item">
+                        <span>زر فتح/إغلاق القائمة:</span>
                         <input type="color" name="c_toggle_btn" value="{{ config.colors.toggle_btn }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>عنوان النموذج (أضف منتجاً جديداً للبيع):</span>
+                    <div class="row-item">
+                        <span>عنوان نموذج الإضافة:</span>
                         <input type="color" name="c_form_main_title" value="{{ config.colors.form_main_title }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>كلمات الحقول (اسم المنتج / السعر / الرقم):</span>
+                    <div class="row-item">
+                        <span>عناوين الحقول ( Labels ):</span>
                         <input type="color" name="c_label_title" value="{{ config.colors.label_title }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>جملة "اضغط هنا لاختيار صور المنتج":</span>
+                    <div class="row-item">
+                        <span>جملة اختيار الصور:</span>
                         <input type="color" name="c_upload_text" value="{{ config.colors.upload_text }}">
                     </div>
-                    <div class="color-pick-row">
-                        <span>زر "نشر المنتج":</span>
+                    <div class="row-item">
+                        <span>زر نشر المنتج:</span>
                         <input type="color" name="c_submit_btn" value="{{ config.colors.submit_btn }}">
                     </div>
                     
@@ -510,11 +546,13 @@ def add_product():
     global product_id_counter
     title = request.form.get('title')
     price = request.form.get('price')
-    phone = request.form.get('phone', '').strip()
+    contact_type = request.form.get('contact_type')
+    contact_value = request.form.get('contact_value', '').strip()
     image_files = request.files.getlist('images')
     
-    if not phone.isdigit() or len(phone) <= 7:
-        error_message = "❌ خطأ: يجب أن يتكون رقم التواصل من أرقام فقط وأن يكون أطول من 7 خانات."
+    # الشرط الجديد: ألا يقل المدخل عن 5 أحرف وألا يحتوي على كلمات غير مرغوب فيها أو مسافات فارغة غير صالحة
+    if len(contact_value) <= 5:
+        error_message = "❌ خطأ: رقم التواصل غير صحيح (يجب أن يكون أطول من 5 أحرف)."
         return render_template_string(html_template, products=products, config=site_config, error=error_message)
 
     images_list = []
@@ -524,12 +562,13 @@ def add_product():
             image_base64 = base64.b64encode(image_bytes).decode('utf-8')
             images_list.append(f"data:image/jpeg;base64,{image_base64}")
     
-    if title and price and phone and images_list:
+    if title and price and contact_value and images_list:
         products.insert(0, {
             "id": product_id_counter,
             "title": title, 
             "price": price, 
-            "phone": phone, 
+            "contact_type": contact_type,
+            "contact_value": contact_value,
             "images": images_list
         })
         product_id_counter += 1
@@ -554,7 +593,13 @@ def update_config():
     site_config['title'] = request.form.get('title', site_config['title'])
     site_config['subtitle'] = request.form.get('subtitle', site_config['subtitle'])
     
-    # تحديث الألوان التفصيلية لكل جملة وجزء بالموقع
+    # تحديث النصوص والجمل من لوحة التحكم
+    for key in site_config['texts']:
+        form_txt = request.form.get(f'txt_{key}')
+        if form_txt:
+            site_config['texts'][key] = form_txt
+
+    # تحديث الألوان
     for key in site_config['colors']:
         form_val = request.form.get(f'c_{key}')
         if form_val:
