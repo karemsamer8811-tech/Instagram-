@@ -1,5 +1,3 @@
-تفضل! تم إعادة ترتيب الصفحة بحيث تصبح "المنتجات المعروضة" في البداية، يليها زر "إاضافة منتج" أنيق. عند الضغط على هذا الزر، ستفتح أو تنكشف قائمة أو نافذة إدخال بيانات المنتج الجديد مباشرة.
-قم بنسخ هذا الكود بالكامل واستبداله داخل ملف main.py على GitHub:
 from flask import Flask, render_template_string, request, redirect, url_for
 import os
 import base64
@@ -53,9 +51,8 @@ html_template = """
         }
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
-        /* خلفية حمراء مع إطار أبيض لامع ونصوص بيضاء */
         .glass-title {
             background: #ff5252;
             border: 2px solid #ffffff;
@@ -73,112 +70,6 @@ html_template = """
             font-size: 13px;
             margin: 10px 0 0 0;
             letter-spacing: 0.5px;
-        }
-        
-        /* زر إظهار/إخفاء نموذج الإضافة */
-        .toggle-form-btn {
-            background-color: #ff5252;
-            color: white;
-            border: 2px solid #ffffff;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
-            transition: all 0.3s ease;
-        }
-        .toggle-form-btn:hover {
-            background-color: #ff1717;
-            transform: scale(1.02);
-        }
-
-        /* صندوق النموذج المخفي افتراضياً ويظهر عند النقر */
-        .container {
-            background: #1a1a1a;
-            border: 1px solid #2c2c2c;
-            border-radius: 12px;
-            padding: 20px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            margin-bottom: 30px;
-            display: none; /* مخفي في البداية */
-        }
-        .container.active {
-            display: block; /* يظهر عند النقر */
-        }
-
-        .form-main-title {
-            color: #ffffff;
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .input-group {
-            margin-bottom: 15px;
-        }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 13px;
-            color: #ccc;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #333;
-            border-radius: 8px;
-            background: #121212;
-            box-sizing: border-box;
-            font-size: 14px;
-            color: white;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .input-group input:focus {
-            border-color: #ff6b6b;
-        }
-        .file-upload {
-            border: 2px dashed #ff6b6b;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            background: rgba(255, 107, 107, 0.03);
-            cursor: pointer;
-            margin-bottom: 10px;
-            color: #ff6b6b;
-            font-size: 13px;
-            transition: background 0.3s;
-        }
-        .file-upload:hover {
-            background: rgba(255, 107, 107, 0.08);
-        }
-        .submit-btn {
-            background-color: #ff5252;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .submit-btn:hover {
-            background-color: #ff1717;
-        }
-        .error-msg {
-            background: rgba(220, 38, 38, 0.1);
-            border: 1px solid #dc2626;
-            color: #ef4444;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 13px;
-            margin-bottom: 15px;
         }
         
         /* قسم المنتجات في الأعلى */
@@ -255,6 +146,112 @@ html_template = """
         .whatsapp-btn:hover {
             background: #1ebe5d;
         }
+
+        /* زر إضافة منتج */
+        .toggle-form-btn {
+            background-color: #ff5252;
+            color: white;
+            border: 2px solid #ffffff;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(255, 82, 82, 0.4);
+            transition: all 0.3s ease;
+        }
+        .toggle-form-btn:hover {
+            background-color: #ff1717;
+            transform: scale(1.02);
+        }
+
+        /* صندوق النموذج المخفي افتراضياً ويفتح عند النقر */
+        .container {
+            background: #1a1a1a;
+            border: 1px solid #2c2c2c;
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+            display: none;
+        }
+        .container.active {
+            display: block;
+        }
+
+        .form-main-title {
+            color: #ffffff;
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            color: #ccc;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #121212;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: white;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #ff6b6b;
+        }
+        .file-upload {
+            border: 2px dashed #ff6b6b;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            background: rgba(255, 107, 107, 0.03);
+            cursor: pointer;
+            margin-bottom: 10px;
+            color: #ff6b6b;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+        .file-upload:hover {
+            background: rgba(255, 107, 107, 0.08);
+        }
+        .submit-btn {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background-color: #ff1717;
+        }
+        .error-msg {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid #dc2626;
+            color: #ef4444;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -268,7 +265,7 @@ html_template = """
         <p>لكل قطعة حكاية</p>
     </div>
 
-    <!-- 1. قسم المنتجات المعروضة أولاً -->
+    <!-- 1. المنتجات المعروضة أولاً -->
     <div class="products-section">
         <h2 style="color: #ff6b6b; margin-bottom: 15px; text-align: right;">المنتجات المعروضة</h2>
         <div class="products-grid">
@@ -342,7 +339,6 @@ html_template = """
             }
         }
 
-        // إذا حدث خطأ أثناء الإرسال، اجعل القائمة مفتوحة تلقائياً
         window.onload = function() {
             {% if error %}
                 document.getElementById('formContainer').style.display = 'block';
@@ -428,7 +424,6 @@ def add_product():
     phone = request.form.get('phone', '').strip()
     image_files = request.files.getlist('images')
     
-    # التحقق من أن رقم الهاتف يتكون من أرقام فقط وأطول من 7 خانات
     if not phone.isdigit() or len(phone) <= 7:
         error_message = "❌ خطأ: يجب أن يتكون رقم التواصل من أرقام فقط وأن يكون أطول من 7 خانات."
         return render_template_string(html_template, products=products, error=error_message)
@@ -473,4 +468,3 @@ def delete_product(p_id):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
