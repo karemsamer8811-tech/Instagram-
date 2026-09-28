@@ -680,23 +680,23 @@ admin_template = """
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة الإعدادات والتحكم</title>
     <style>
-        body { background: #ffffff; color: #18181b; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { background: #ffffff; padding: 25px; border-radius: 12px; border: 1px solid #e4e4e7; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-top: 20px; }
-        h2, h3 { color: #16a34a; text-align: center; margin-bottom: 20px; }
-        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #d4d4d8; background: #fafafa; color: #18181b; box-sizing: border-box; font-size: 13px; outline: none; }
-        input[type="color"] { width: 50px; height: 32px; border: 1px solid #d4d4d8; border-radius: 6px; background: #fafafa; cursor: pointer; padding: 0; vertical-align: middle; }
-        button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #16a34a; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
-        button:hover { background: #15803d; }
-        .product-row { display: flex; justify-content: space-between; align-items: center; background: #fafafa; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e4e4e7; }
+        body { background: #000000; color: #ffffff; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { background: #111111; padding: 25px; border-radius: 12px; border: 1px solid #222222; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); margin-top: 20px; }
+        h2, h3 { color: #25d366; text-align: center; margin-bottom: 20px; }
+        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333333; background: #000000; color: #ffffff; box-sizing: border-box; font-size: 13px; outline: none; }
+        input[type="color"] { width: 50px; height: 32px; border: 1px solid #333333; border-radius: 6px; background: #000000; cursor: pointer; padding: 0; vertical-align: middle; }
+        button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
+        button:hover { background: #1ebd56; }
+        .product-row { display: flex; justify-content: space-between; align-items: center; background: #000000; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #222222; }
         .delete-btn { background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; font-size: 13px; }
         .delete-btn:hover { background: #b91c1c; }
-        .back-link { display: block; text-align: center; margin-top: 20px; color: #16a34a; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .section-box { border-top: 1px solid #e4e4e7; margin-top: 25px; padding-top: 20px; }
-        .row-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #fafafa; padding: 6px 10px; border-radius: 6px; border: 1px solid #e4e4e7; }
-        .row-item span { font-size: 12px; color: #52525b; width: 40%; }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: #25d366; text-decoration: none; font-size: 14px; font-weight: bold; }
+        .section-box { border-top: 1px solid #222222; margin-top: 25px; padding-top: 20px; }
+        .row-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #000000; padding: 6px 10px; border-radius: 6px; border: 1px solid #222222; }
+        .row-item span { font-size: 12px; color: #cccccc; width: 40%; }
         .row-item input[type="text"] { width: 58%; margin: 0; }
-        label { display: block; margin-bottom: 5px; font-size: 13px; color: #3f3f46; font-weight: bold; }
-        .checkbox-label { display: flex; align-items: center; gap: 10px; background: #fafafa; padding: 10px; border-radius: 8px; border: 1px solid #e4e4e7; cursor: pointer; margin-bottom: 10px; font-size: 14px; color: #18181b; font-weight: normal; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; color: #ffffff; font-weight: bold; }
+        .checkbox-label { display: flex; align-items: center; gap: 10px; background: #000000; padding: 10px; border-radius: 8px; border: 1px solid #222222; cursor: pointer; margin-bottom: 10px; font-size: 14px; color: #ffffff; font-weight: normal; }
         .checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
     </style>
 </head>
@@ -705,15 +705,15 @@ admin_template = """
         <h2>لوحة الإعدادات والتحكم</h2>
         {% if not authorized %}
             <form method="POST">
-                <p style="margin-bottom: 12px; font-size: 14px; color: #52525b; text-align: center;">الرجاء إدخال رمز المرور للوصول:</p>
+                <p style="margin-bottom: 12px; font-size: 14px; color: #cccccc; text-align: center;">الرجاء إدخال رمز المرور للوصول:</p>
                 <input type="password" name="password" placeholder="رمز المرور" required>
                 <button type="submit">دخول</button>
             </form>
             {% if error %}
-                <p style="color: #dc2626; text-align: center; font-size: 13px; margin-top: 10px;">❌ رمز المرور غير صحيح!</p>
+                <p style="color: #ef4444; text-align: center; font-size: 13px; margin-top: 10px;">❌ رمز المرور غير صحيح!</p>
             {% endif %}
         {% else %}
-            <p style="color: #16a34a; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
+            <p style="color: #25d366; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
             <div class="section-box">
                 <h3>إدارة الخصائص والميزات</h3>
@@ -787,9 +787,9 @@ admin_template = """
                     <input type="text" name="subtitle" value="{{ config.subtitle }}" required>
 
                     <label>صورة خلفية الواجهة (من المعرض):</label>
-                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #52525b;">
+                    <input type="file" name="bg_image_file" accept="image/*" style="margin-bottom: 15px; color: #ffffff;">
 
-                    <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #d4d4d8; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
+                    <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #222222; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
                     
                     {% for key, val in config.texts.items() %}
                         <div class="row-item">
@@ -798,7 +798,7 @@ admin_template = """
                         </div>
                     {% endfor %}
 
-                    <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #d4d4d8; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
+                    <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #222222; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
                     
                     <div class="row-item">
                         <span>عنوان الموقع الرئيسي:</span>
@@ -857,7 +857,7 @@ admin_template = """
                 <h3>قائمة المنتجات (للحذف)</h3>
                 <div>
                     {% if products|length == 0 %}
-                        <p style="color: #71717a; text-align: center; padding: 15px;">لا توجد منتجات مسجلة حالياً.</p>
+                        <p style="color: #888888; text-align: center; padding: 15px;">لا توجد منتجات مسجلة حالياً.</p>
                     {% endif %}
                     {% for p in products %}
                         <div class="product-row">
