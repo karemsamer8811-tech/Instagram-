@@ -76,6 +76,7 @@ site_config = {
         "bg_color": "#000000",             
         "title": "#ff5252",                
         "subtitle": "#aaaaaa",             
+        "logo_border": "#ffffff",          
         "products_heading": "#ffffff",     
         "no_products": "#777777",          
         "product_title": "#ffffff",        
@@ -150,14 +151,14 @@ html_template = """
         }
         .glass-title {
             background: #000000;
-            border: 2px solid #ffffff;
+            border: 2px solid {{ config.colors.logo_border }};
             display: inline-block;
             padding: 12px 25px;
             border-radius: 14px;
             color: {{ config.colors.title }};
             font-size: 28px;
             font-weight: bold;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px {{ config.colors.logo_border }}66, inset 0 0 10px {{ config.colors.logo_border }}33;
             margin: 0;
         }
         .header p {
@@ -876,6 +877,10 @@ admin_template = """
                         <input type="color" name="c_title" value="{{ config.colors.title }}">
                     </div>
                     <div class="row-item">
+                        <span>إطار وتوهج مربع الشعار (Atiq):</span>
+                        <input type="color" name="c_logo_border" value="{{ config.colors.logo_border }}">
+                    </div>
+                    <div class="row-item">
                         <span>وصف الموقع:</span>
                         <input type="color" name="c_subtitle" value="{{ config.colors.subtitle }}">
                     </div>
@@ -1027,11 +1032,9 @@ def update_controls():
 def update_texts():
     global site_config, text_visibility
     for key in site_config['texts']:
-        # تحديث النص إذا تم إرساله
         form_txt = request.form.get(f'txt_{key}')
         if form_txt:
             site_config['texts'][key] = form_txt
-        # تحديث حالة الظهور والإخفاء (المربع)
         text_visibility[key] = True if request.form.get(f'vis_{key}') == 'on' else False
     return redirect(url_for('admin'))
 
