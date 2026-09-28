@@ -474,17 +474,22 @@ html_template = """
                 {% endif %}
                 <input type="text" name="title" {% if vis.input_title_placeholder %}placeholder="{{ config.texts.input_title_placeholder }}"{% endif %} required>
             </div>
+
+            {% if vis.label_price or vis.input_price_placeholder %}
             <div class="input-group">
                 {% if vis.label_price %}
                 <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_price }}</label>
                 {% endif %}
-                <input type="text" name="price" {% if vis.input_price_placeholder %}placeholder="{{ config.texts.input_price_placeholder }}"{% endif %} required>
+                <input type="text" name="price" {% if vis.input_price_placeholder %}placeholder="{{ config.texts.input_price_placeholder }}"{% endif %}>
             </div>
+            {% endif %}
+
+            {% if vis.label_contact_method or vis.contact_type_instagram or vis.contact_type_phone or vis.input_contact_placeholder %}
             <div class="input-group">
                 {% if vis.label_contact_method %}
                 <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_contact_method }}</label>
                 {% endif %}
-                <select name="contact_type" required>
+                <select name="contact_type">
                     {% if vis.contact_type_instagram %}
                     <option value="instagram">{{ config.texts.contact_type_instagram }}</option>
                     {% endif %}
@@ -492,8 +497,10 @@ html_template = """
                     <option value="phone">{{ config.texts.contact_type_phone }}</option>
                     {% endif %}
                 </select>
-                <input type="text" name="contact_value" {% if vis.input_contact_placeholder %}placeholder="{{ config.texts.input_contact_placeholder }}"{% endif %} required>
+                <input type="text" name="contact_value" {% if vis.input_contact_placeholder %}placeholder="{{ config.texts.input_contact_placeholder }}"{% endif %}>
             </div>
+            {% endif %}
+
             {% if vis.upload_text %}
             <div class="file-upload" onclick="document.getElementById('imagesInput').click();">
                 {{ config.texts.upload_text }}
@@ -981,15 +988,11 @@ def add_product():
         return redirect(url_for('index'))
         
     title = request.form.get('title')
-    price = request.form.get('price')
-    contact_type = request.form.get('contact_type')
+    price = request.form.get('price', '')
+    contact_type = request.form.get('contact_type', 'phone')
     contact_value = request.form.get('contact_value', '').strip()
     image_files = request.files.getlist('images')
     
-    if len(contact_value) <= 5:
-        error_message = "❌ خطأ: رقم التواصل غير صحيح (يجب أن يكون أطول من 5 أحرف)."
-        return render_template_string(html_template, products=products, config=site_config, controls=site_controls, vis=text_visibility, error=error_message)
-
     images_list = []
     for img_file in image_files:
         if img_file and img_file.filename != '':
@@ -997,7 +1000,7 @@ def add_product():
             image_base64 = base64.b64encode(image_bytes).decode('utf-8')
             images_list.append(f"data:image/jpeg;base64,{image_base64}")
     
-    if title and price and contact_value and images_list:
+    if title:
         products.insert(0, {
             "id": product_id_counter,
             "title": title, 
