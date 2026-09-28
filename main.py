@@ -739,7 +739,7 @@ admin_template = """
         body { background: #000000; color: #ffffff; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { background: #111111; padding: 25px; border-radius: 12px; border: 1px solid #222222; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); margin-top: 20px; }
         h2, h3 { color: #ffffff; text-align: center; margin-bottom: 20px; }
-        input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333333; background: #000000; color: #ffffff; box-sizing: border-box; font-size: 13px; outline: none; }
+        input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333333; background: #000000; color: #ffffff; box-sizing: border-box; font-size: 13px; outline: none; }
         input[type="color"] { width: 50px; height: 32px; border: 1px solid #333333; border-radius: 6px; background: #000000; cursor: pointer; padding: 0; vertical-align: middle; }
         button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
         button:hover { background: #1ebd56; }
@@ -771,6 +771,45 @@ admin_template = """
         {% else %}
             <p style="color: #25d366; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
+            <div class="section-box">
+                <h3>➕ إضافة منتج جديد (خاص بالمسؤول)</h3>
+                <form action="/admin-add-product" method="POST" enctype="multipart/form-data">
+                    {% if vis.label_title %}
+                    <label>{{ config.texts.label_title }}</label>
+                    {% endif %}
+                    <input type="text" name="title" {% if vis.input_title_placeholder %}placeholder="{{ config.texts.input_title_placeholder }}"{% endif %} required>
+
+                    {% if vis.label_price or vis.input_price_placeholder %}
+                    {% if vis.label_price %}
+                    <label>{{ config.texts.label_price }}</label>
+                    {% endif %}
+                    <input type="text" name="price" {% if vis.input_price_placeholder %}placeholder="{{ config.texts.input_price_placeholder }}"{% endif %}>
+                    {% endif %}
+
+                    {% if vis.label_contact_method or vis.contact_type_instagram or vis.contact_type_phone or vis.input_contact_placeholder %}
+                    {% if vis.label_contact_method %}
+                    <label>{{ config.texts.label_contact_method }}</label>
+                    {% endif %}
+                    <select name="contact_type">
+                        {% if vis.contact_type_instagram %}
+                        <option value="instagram">{{ config.texts.contact_type_instagram }}</option>
+                        {% endif %}
+                        {% if vis.contact_type_phone %}
+                        <option value="phone">{{ config.texts.contact_type_phone }}</option>
+                        {% endif %}
+                    </select>
+                    <input type="text" name="contact_value" {% if vis.input_contact_placeholder %}placeholder="{{ config.texts.input_contact_placeholder }}"{% endif %}>
+                    {% endif %}
+
+                    {% if vis.upload_text %}
+                    <label>{{ config.texts.upload_text }}</label>
+                    <input type="file" name="images" multiple accept="image/*" style="color: #fff; margin-bottom: 10px;">
+                    {% endif %}
+
+                    <button type="submit" style="margin-top: 5px;">نشر المنتج من الإعدادات</button>
+                </form>
+            </div>
+
             <div class="section-box">
                 <h3>إدارة الخصائص والميزات العامة</h3>
                 <form action="/update-controls" method="POST">
@@ -1012,6 +1051,35 @@ def add_product():
         product_id_counter += 1
         
     return redirect(url_for('index'))
+
+@app.route('/admin-add-product', methods=['POST'])
+def admin_add_product():
+    global product_id_counter
+    title = request.form.get('title')
+    price = request.form.get('price', '')
+    contact_type = request.form.get('contact_type', 'phone')
+    contact_value = request.form.get('contact_value', '').strip()
+    image_files = request.files.getlist('images')
+    
+    images_list = []
+    for img_file in image_files:
+        if img_file and img_file.filename != '':
+            image_bytes = img_file.read()
+            image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+            images_list.append(f"data:image/jpeg;base64,{image_base64}")
+    
+    if title:
+        products.insert(0, {
+            "id": product_id_counter,
+            "title": title, 
+            "price": price, 
+            "contact_type": contact_type,
+            "contact_value": contact_value,
+            "images": images_list
+        })
+        product_id_counter += 1
+        
+    return redirect(url_for('admin'))
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
