@@ -682,7 +682,7 @@ admin_template = """
     <style>
         body { background: #000000; color: #ffffff; font-family: Tahoma, sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { background: #111111; padding: 25px; border-radius: 12px; border: 1px solid #222222; width: 100%; max-width: 650px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); margin-top: 20px; }
-        h2, h3 { color: #25d366; text-align: center; margin-bottom: 20px; }
+        h2, h3 { color: #ffffff; text-align: center; margin-bottom: 20px; }
         input[type="text"], input[type="password"], textarea { width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333333; background: #000000; color: #ffffff; box-sizing: border-box; font-size: 13px; outline: none; }
         input[type="color"] { width: 50px; height: 32px; border: 1px solid #333333; border-radius: 6px; background: #000000; cursor: pointer; padding: 0; vertical-align: middle; }
         button { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; transition: background 0.3s; font-size: 15px; }
