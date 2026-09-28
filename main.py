@@ -9,13 +9,13 @@ products = []
 product_id_counter = 1
 ADMIN_PASSWORD = "samemomomo**1"
 
-# إعدادات التحكم والخواص
+# إعدادات التحكم والخواص العامة
 site_controls = {
     "block_posting": False,  
     "enable_search": True,
     "enable_socials": True,       
     "enable_copyright": True,
-    "enable_contact_btn": True,   # خيار تشغيل أو إطفاء زر التواصل
+    "enable_contact_btn": True,   
     "social_links": [
         {"name": "إنستغرام", "url": "#"},
         {"name": "تيليجرام", "url": "#"}
@@ -23,7 +23,30 @@ site_controls = {
     "copyright_text": "جميع الحقوق محفوظة © عتيق 2026. تم تصميم وتطوير المنصة بعناية فائقة."
 }
 
-# إعدادات واجهة الموقع الافتراضية والنصوص
+# التحكم بإظهار أو إخفاء كل نص أو عنصر في الواجهة (True = ظاهر، False = مخفي)
+text_visibility = {
+    "heading_products": True,
+    "no_products": True,
+    "toggle_btn_open": True,
+    "toggle_btn_close": True,
+    "form_main_title": True,
+    "label_title": True,
+    "input_title_placeholder": True,
+    "label_price": True,
+    "input_price_placeholder": True,
+    "label_contact_method": True,
+    "contact_type_instagram": True,
+    "contact_type_phone": True,
+    "input_contact_placeholder": True,
+    "upload_text": True,
+    "submit_btn": True,
+    "back_home": True,
+    "view_details": True,
+    "search_placeholder": True,
+    "contact_word": True
+}
+
+# إعدادات واجهة الموقع ونصوصها الأساسية
 site_config = {
     "title": "عتيق | Atiq",
     "subtitle": "لكل قطعة حكاية",
@@ -47,7 +70,7 @@ site_config = {
         "back_home": "← العودة إلى المتجر الرئيسي",
         "view_details": "عرض التفاصيل",
         "search_placeholder": "🔍 ابحث عن عنصر أو منتج...",
-        "contact_word": "تواصل"  # الكلمة الجديدة للتحكم بنص زر التواصل
+        "contact_word": "تواصل"
     },
     "colors": {
         "bg_color": "#000000",             
@@ -397,16 +420,18 @@ html_template = """
         <p>{{ config.subtitle }}</p>
     </div>
 
-    {% if controls.enable_search %}
+    {% if controls.enable_search and vis.search_placeholder %}
     <div class="search-box">
         <input type="text" id="searchInput" class="search-input" placeholder="{{ config.texts.search_placeholder }}" onkeyup="filterProducts()">
     </div>
     {% endif %}
 
     <div class="products-section">
+        {% if vis.heading_products %}
         <h2 style="color: {{ config.colors.products_heading }}; margin-bottom: 15px; text-align: right;">{{ config.texts.heading_products }}</h2>
+        {% endif %}
         <div class="products-grid" id="productsGrid">
-            {% if products|length == 0 %}
+            {% if products|length == 0 and vis.no_products %}
                 <p style="color: {{ config.colors.no_products }}; text-align: center; grid-column: 1 / -1; padding: 20px;" id="noProductsMsg">{{ config.texts.no_products }}</p>
             {% endif %}
             {% for p in products %}
@@ -419,18 +444,22 @@ html_template = """
                     <div class="product-info">
                         <div class="product-title" title="{{ p.title }}">{{ p.title }}</div>
                         <div class="product-price">{{ p.price }}</div>
+                        {% if vis.view_details %}
                         <a href="/product/{{ p.id }}" class="contact-btn">{{ config.texts.view_details }}</a>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
         </div>
     </div>
 
-    {% if not controls.block_posting %}
+    {% if not controls.block_posting and (vis.toggle_btn_open or vis.toggle_btn_close) %}
     <button class="toggle-form-btn" onclick="toggleForm()" id="toggleBtn">{{ config.texts.toggle_btn_open }}</button>
 
     <div class="container {% if error %}active{% endif %}" id="formContainer">
+        {% if vis.form_main_title %}
         <h2 class="form-main-title">{{ config.texts.form_main_title }}</h2>
+        {% endif %}
         
         {% if error %}
             <div class="error-msg">{{ error }}</div>
@@ -438,28 +467,42 @@ html_template = """
 
         <form action="/add" method="POST" enctype="multipart/form-data">
             <div class="input-group">
+                {% if vis.label_title %}
                 <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_title }}</label>
-                <input type="text" name="title" placeholder="{{ config.texts.input_title_placeholder }}" required>
+                {% endif %}
+                <input type="text" name="title" {% if vis.input_title_placeholder %}placeholder="{{ config.texts.input_title_placeholder }}"{% endif %} required>
             </div>
             <div class="input-group">
+                {% if vis.label_price %}
                 <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_price }}</label>
-                <input type="text" name="price" placeholder="{{ config.texts.input_price_placeholder }}" required>
+                {% endif %}
+                <input type="text" name="price" {% if vis.input_price_placeholder %}placeholder="{{ config.texts.input_price_placeholder }}"{% endif %} required>
             </div>
             <div class="input-group">
+                {% if vis.label_contact_method %}
                 <label style="color: {{ config.colors.label_title }};">{{ config.texts.label_contact_method }}</label>
+                {% endif %}
                 <select name="contact_type" required>
+                    {% if vis.contact_type_instagram %}
                     <option value="instagram">{{ config.texts.contact_type_instagram }}</option>
+                    {% endif %}
+                    {% if vis.contact_type_phone %}
                     <option value="phone">{{ config.texts.contact_type_phone }}</option>
+                    {% endif %}
                 </select>
-                <input type="text" name="contact_value" placeholder="{{ config.texts.input_contact_placeholder }}" required>
+                <input type="text" name="contact_value" {% if vis.input_contact_placeholder %}placeholder="{{ config.texts.input_contact_placeholder }}"{% endif %} required>
             </div>
+            {% if vis.upload_text %}
             <div class="file-upload" onclick="document.getElementById('imagesInput').click();">
                 {{ config.texts.upload_text }}
                 <input type="file" id="imagesInput" name="images" multiple accept="image/*" style="display: none;" onchange="showCount(this)">
             </div>
             <div id="file-count" style="font-size: 12px; color: #aaa; margin-bottom: 15px; text-align: center;"></div>
+            {% endif %}
 
+            {% if vis.submit_btn %}
             <button type="submit" class="submit-btn">{{ config.texts.submit_btn }}</button>
+            {% endif %}
         </form>
     </div>
     {% endif %}
@@ -512,6 +555,7 @@ html_template = """
 
         function filterProducts() {
             const input = document.getElementById('searchInput');
+            if(!input) return;
             const filter = input.value.toLowerCase();
             const grid = document.getElementById('productsGrid');
             const cards = grid.getElementsByClassName('product-card');
@@ -632,13 +676,19 @@ product_detail_template = """
 
         {% if controls.enable_contact_btn %}
             {% if product.contact_type == 'instagram' %}
-                <a class="contact-btn" href="https://instagram.com/{{ product.contact_value.replace('@', '') }}" target="_blank">{{ config.texts.contact_word }}: {{ product.contact_value }}</a>
+                <a class="contact-btn" href="https://instagram.com/{{ product.contact_value.replace('@', '') }}" target="_blank">
+                    {% if vis.contact_word %}{{ config.texts.contact_word }}: {% endif %}{{ product.contact_value }}
+                </a>
             {% else %}
-                <a class="contact-btn" href="https://wa.me/{{ product.contact_value }}" target="_blank">{{ config.texts.contact_word }}: {{ product.contact_value }}</a>
+                <a class="contact-btn" href="https://wa.me/{{ product.contact_value }}" target="_blank">
+                    {% if vis.contact_word %}{{ config.texts.contact_word }}: {% endif %}{{ product.contact_value }}
+                </a>
             {% endif %}
         {% endif %}
 
+        {% if vis.back_home %}
         <a href="/" class="back-link">{{ config.texts.back_home }}</a>
+        {% endif %}
     </div>
 </body>
 </html>
@@ -691,7 +741,7 @@ admin_template = """
         .section-box { border-top: 1px solid #222222; margin-top: 25px; padding-top: 20px; }
         .row-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: #000000; padding: 6px 10px; border-radius: 6px; border: 1px solid #222222; }
         .row-item span { font-size: 12px; color: #cccccc; width: 40%; }
-        .row-item input[type="text"] { width: 58%; margin: 0; }
+        .row-item input[type="text"] { width: 45%; margin: 0; }
         label { display: block; margin-bottom: 5px; font-size: 13px; color: #ffffff; font-weight: bold; }
         .checkbox-label { display: flex; align-items: center; gap: 10px; background: #000000; padding: 10px; border-radius: 8px; border: 1px solid #222222; cursor: pointer; margin-bottom: 10px; font-size: 14px; color: #ffffff; font-weight: normal; }
         .checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
@@ -713,7 +763,7 @@ admin_template = """
             <p style="color: #25d366; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
             <div class="section-box">
-                <h3>إدارة الخصائص والميزات والأزرار</h3>
+                <h3>إدارة الخصائص والميزات العامة</h3>
                 <form action="/update-controls" method="POST">
                     <label class="checkbox-label">
                         <input type="checkbox" name="block_posting" {% if controls.block_posting %}checked{% endif %}>
@@ -740,7 +790,26 @@ admin_template = """
                         تفعيل وعرض صفحة وحقوق النشر في أسفل المتجر
                     </label>
 
-                    <button type="submit" style="margin-top: 10px;">حفظ الخصائص</button>
+                    <button type="submit" style="margin-top: 10px;">حفظ الخصائص العامة</button>
+                </form>
+            </div>
+
+            <div class="section-box">
+                <h3>إدارة إظهار، إطفاء وتعديل نصوص وكلمات الموقع</h3>
+                <form action="/update-texts" method="POST">
+                    <p style="font-size: 12px; color: #888; margin-bottom: 12px; text-align: center;">ضع علامة صح لإظهار الكلمة أو قم بإزالتها لإطفائها، ويمكنك تعديل النص.</p>
+                    
+                    {% for key, val in config.texts.items() %}
+                        <div class="row-item">
+                            <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; cursor: pointer; width: 45%; margin: 0;">
+                                <input type="checkbox" name="vis_{{ key }}" {% if vis[key] %}checked{% endif %} style="width: 16px; height: 16px; cursor: pointer;">
+                                {{ key }}
+                            </label>
+                            <input type="text" name="txt_{{ key }}" value="{{ val }}" required>
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" style="margin-top: 15px;">حفظ النصوص وإعدادات الظهور</button>
                 </form>
             </div>
 
@@ -780,7 +849,7 @@ admin_template = """
             </div>
 
             <div class="section-box">
-                <h3>تعديل واجهة ومظهر الموقع</h3>
+                <h3>تعديل واجهة وألوان الموقع</h3>
                 <form action="/update-config" method="POST" enctype="multipart/form-data">
                     <label>اسم الموقع:</label>
                     <input type="text" name="title" value="{{ config.title }}" required>
@@ -795,15 +864,6 @@ admin_template = """
                         <span style="font-size: 13px; color: #ccc;">إلغاء وإزالة صورة الخلفية الحالية؟</span>
                         <input type="checkbox" name="remove_bg_image" style="width: 18px; height: 18px; cursor: pointer;">
                     </div>
-
-                    <h3 style="margin-top: 20px; font-size: 15px; border-bottom: 1px solid #222222; padding-bottom: 8px;">تعديل جمل ونصوص الموقع</h3>
-                    
-                    {% for key, val in config.texts.items() %}
-                        <div class="row-item">
-                            <span>{{ key }}:</span>
-                            <input type="text" name="txt_{{ key }}" value="{{ val }}" required>
-                        </div>
-                    {% endfor %}
 
                     <h3 style="margin-top: 25px; font-size: 15px; border-bottom: 1px solid #222222; padding-bottom: 8px;">تعديل ألوان أجزاء الموقع</h3>
                     
@@ -860,7 +920,7 @@ admin_template = """
                         <input type="color" name="c_submit_btn" value="{{ config.colors.submit_btn }}">
                     </div>
                     
-                    <button type="submit" style="margin-top: 15px;">حفظ التعديلات والتصميم</button>
+                    <button type="submit" style="margin-top: 15px;">حفظ الألوان والتصميم</button>
                 </form>
             </div>
 
@@ -889,14 +949,14 @@ admin_template = """
 
 @app.route('/')
 def index():
-    return render_template_string(html_template, products=products, config=site_config, controls=site_controls, error=None)
+    return render_template_string(html_template, products=products, config=site_config, controls=site_controls, vis=text_visibility, error=None)
 
 @app.route('/product/<int:p_id>')
 def product_detail(p_id):
     product = next((p for p in products if p['id'] == p_id), None)
     if not product:
         return redirect(url_for('index'))
-    return render_template_string(product_detail_template, product=product, config=site_config, controls=site_controls)
+    return render_template_string(product_detail_template, product=product, config=site_config, controls=site_controls, vis=text_visibility)
 
 @app.route('/copyright')
 def copyright_page():
@@ -918,7 +978,7 @@ def add_product():
     
     if len(contact_value) <= 5:
         error_message = "❌ خطأ: رقم التواصل غير صحيح (يجب أن يكون أطول من 5 أحرف)."
-        return render_template_string(html_template, products=products, config=site_config, controls=site_controls, error=error_message)
+        return render_template_string(html_template, products=products, config=site_config, controls=site_controls, vis=text_visibility, error=error_message)
 
     images_list = []
     for img_file in image_files:
@@ -951,7 +1011,7 @@ def admin():
             authorized = True
         else:
             error = True
-    return render_template_string(admin_template, products=products, config=site_config, controls=site_controls, authorized=authorized, error=error)
+    return render_template_string(admin_template, products=products, config=site_config, controls=site_controls, vis=text_visibility, authorized=authorized, error=error)
 
 @app.route('/update-controls', methods=['POST'])
 def update_controls():
@@ -961,6 +1021,18 @@ def update_controls():
     site_controls['enable_contact_btn'] = True if request.form.get('enable_contact_btn') == 'on' else False
     site_controls['enable_socials'] = True if request.form.get('enable_socials') == 'on' else False
     site_controls['enable_copyright'] = True if request.form.get('enable_copyright') == 'on' else False
+    return redirect(url_for('admin'))
+
+@app.route('/update-texts', methods=['POST'])
+def update_texts():
+    global site_config, text_visibility
+    for key in site_config['texts']:
+        # تحديث النص إذا تم إرساله
+        form_txt = request.form.get(f'txt_{key}')
+        if form_txt:
+            site_config['texts'][key] = form_txt
+        # تحديث حالة الظهور والإخفاء (المربع)
+        text_visibility[key] = True if request.form.get(f'vis_{key}') == 'on' else False
     return redirect(url_for('admin'))
 
 @app.route('/update-socials', methods=['POST'])
@@ -1002,11 +1074,6 @@ def update_config():
     site_config['title'] = request.form.get('title', site_config['title'])
     site_config['subtitle'] = request.form.get('subtitle', site_config['subtitle'])
     
-    for key in site_config['texts']:
-        form_txt = request.form.get(f'txt_{key}')
-        if form_txt:
-            site_config['texts'][key] = form_txt
-
     for key in site_config['colors']:
         form_val = request.form.get(f'c_{key}')
         if form_val:
