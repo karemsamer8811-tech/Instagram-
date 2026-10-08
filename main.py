@@ -17,7 +17,9 @@ site_controls = {
     "enable_search": True,
     "enable_socials": True,       
     "enable_copyright": True,
-    "enable_contact_btn": True,   
+    "enable_contact_btn": True,
+    "use_logo_image": False,      # مفتاح تفعيل استخدام صورة الشعار
+    "logo_image": "",             # مسار/بيانات صورة الشعار المرفوعة
     "social_links": [
         {"name": "إنستغرام", "url": "#"},
         {"name": "تيليجرام", "url": "#"}
@@ -80,7 +82,7 @@ site_config = {
         "logo_border": "#ffffff",          
         "products_heading": "#ffffff",     
         "no_products": "#777777",          
-        "product_bg": "#111111",           # لون خلفية بطاقة المنتج الجديدة
+        "product_bg": "#111111",           
         "product_title": "#ffffff",        
         "product_price": "#25d366",        
         "whatsapp_btn": "#25d366",         
@@ -162,6 +164,16 @@ html_template = """
             font-weight: bold;
             box-shadow: 0 0 20px {{ config.colors.logo_border }}66, inset 0 0 10px {{ config.colors.logo_border }}33;
             margin: 0;
+        }
+        .logo-img-container img {
+            max-width: 220px;
+            max-height: 100px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 2px solid {{ config.colors.logo_border }};
+            background: {{ config.colors.logo_bg }};
+            padding: 5px;
+            box-shadow: 0 0 20px {{ config.colors.logo_border }}66;
         }
         .header p {
             color: {{ config.colors.subtitle }};
@@ -419,7 +431,13 @@ html_template = """
     </div>
 
     <div class="header">
-        <h1 class="glass-title">{{ config.title }}</h1>
+        {% if controls.use_logo_image and controls.logo_image %}
+            <div class="logo-img-container">
+                <img src="{{ controls.logo_image }}" alt="شعار الموقع">
+            </div>
+        {% else %}
+            <h1 class="glass-title">{{ config.title }}</h1>
+        {% endif %}
         <p>{{ config.subtitle }}</p>
     </div>
 
@@ -773,6 +791,19 @@ admin_template = """
             <p style="color: #25d366; text-align: center; margin-bottom: 15px; font-weight: bold;">تم تسجيل الدخول بنجاح</p>
             
             <div class="section-box">
+                <h3>🖼️ إدارة شعار الموقع (صورة من المعرض)</h3>
+                <form action="/update-logo" method="POST" enctype="multipart/form-data">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="use_logo_image" {% if controls.use_logo_image %}checked{% endif %}>
+                        تفعيل وعرض صورة الشعار بدلاً من اسم الموقع النصي
+                    </label>
+                    <label style="margin-top: 10px;">اختر صورة الشعار من الجهاز:</label>
+                    <input type="file" name="logo_file" accept="image/*" style="color: #fff; margin-bottom: 10px;">
+                    <button type="submit">حفظ إعدادات الشعار</button>
+                </form>
+            </div>
+
+            <div class="section-box">
                 <h3>➕ إضافة منتج جديد (خاص بالمسؤول)</h3>
                 <form action="/admin-add-product" method="POST" enctype="multipart/form-data">
                     {% if vis.label_title %}
@@ -900,7 +931,7 @@ admin_template = """
             <div class="section-box">
                 <h3>تعديل واجهة وألوان الموقع</h3>
                 <form action="/update-config" method="POST" enctype="multipart/form-data">
-                    <label>اسم الموقع:</label>
+                    <label>اسم الموقع (الاحتياطي):</label>
                     <input type="text" name="title" value="{{ config.title }}" required>
                     
                     <label>شعار / وصف الموقع:</label>
@@ -929,7 +960,7 @@ admin_template = """
                         <input type="color" name="c_logo_bg" value="{{ config.colors.logo_bg }}">
                     </div>
                     <div class="row-item">
-                        <span>إطار وتوهج مربع الشعار (Atiq):</span>
+                        <span>إطار وتوهج مربع الشعار:</span>
                         <input type="color" name="c_logo_border" value="{{ config.colors.logo_border }}">
                     </div>
                     <div class="row-item">
@@ -1009,20 +1040,14 @@ admin_template = """
 """
 
 def process_and_compress_image(image_file):
-    """تقوم بفتح الصورة، تصغير أبعادها بحد أقصى 800 بكسل، وتقليل جودتها لتصبح خفيفة جداً"""
     try:
         img = Image.open(image_file)
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
-        
-        # تصغير الأبعاد الكبيرة للحفاظ على السرعة
         img.thumbnail((800, 800))
-        
-        # ضغط وحفظ بصيغة JPEG بجودة مناسبة وسريعة
         buffer = BytesIO()
         img.save(buffer, format="JPEG", quality=75)
         image_bytes = buffer.getvalue()
-        
         image_base64 = base64.b64encode(image_bytes).decode('utf-8')
         return f"data:image/jpeg;base64,{image_base64}"
     except Exception:
@@ -1119,6 +1144,17 @@ def admin():
             error = True
     return render_template_string(admin_template, products=products, config=site_config, controls=site_controls, vis=text_visibility, authorized=authorized, error=error)
 
+@app.route('/update-logo', methods=['POST'])
+def update_logo():
+    global site_controls
+    site_controls['use_logo_image'] = True if request.form.get('use_logo_image') == 'on' else False
+    logo_file = request.files.get('logo_file')
+    if logo_file and logo_file.filename != '':
+        compressed_logo = process_and_compress_image(logo_file)
+        if compressed_logo:
+            site_controls['logo_image'] = compressed_logo
+    return redirect(url_for('admin'))
+
 @app.route('/update-controls', methods=['POST'])
 def update_controls():
     global site_controls
@@ -1173,33 +1209,4 @@ def update_password():
     return redirect(url_for('admin'))
 
 @app.route('/update-config', methods=['POST'])
-def update_config():
-    global site_config
-    site_config['title'] = request.form.get('title', site_config['title'])
-    site_config['subtitle'] = request.form.get('subtitle', site_config['subtitle'])
-    
-    for key in site_config['colors']:
-        form_val = request.form.get(f'c_{key}')
-        if form_val:
-            site_config['colors'][key] = form_val
-    
-    if request.form.get('remove_bg_image') == 'on':
-        site_config['bg_image'] = ""
-
-    bg_file = request.files.get('bg_image_file')
-    if bg_file and bg_file.filename != '':
-        compressed_bg = process_and_compress_image(bg_file)
-        if compressed_bg:
-            site_config['bg_image'] = compressed_bg
-        
-    return redirect(url_for('admin'))
-
-@app.route('/delete/<int:p_id>', methods=['POST'])
-def delete_product(p_id):
-    global products
-    products = [p for p in products if p['id'] != p_id]
-    return redirect(url_for('admin'))
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+def upd
